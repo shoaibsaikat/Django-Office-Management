@@ -1,34 +1,15 @@
 {% extends "base.html" %}
 
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
 {% block body_block %}
-<h3>User Login</h3>
+<h3>Login</h3>
 <br>
 
-<form method="POST">
-    {% csrf_token %}
-    <div class="row">
-        <div class="col-lg-4"></div>
-        <div class="col-lg-4">
-            <label for="username" class="form-label">Username:</label><br>
-            <input id="username" name="username" type="text" class="from-control">
-        </div>
-        <div class="col-lg-4"></div>
-    </div>
-    <div class="row">
-        <div class="col-lg-4"></div>
-        <div class="col-lg-4">
-            <label for="password" class="form-label">Password:</label><br>
-            <input id="password" name="password" type="password" class="from-control">
-        </div>
-        <div class="col-lg-4"></div>
-    </div>
-    <br>
-    <div class="row">
-        <div class="col-lg-4"></div>
-        <div class="col-lg-4">
-            <button type="submit" class="btn btn-primary">Login</button>
-        </div>
-        <div class="col-lg-4"></div>
-    </div>
+<form method="post">{% csrf_token %}
+    {% bootstrap_form form %}
+    <input type="submit" value="Login" class="btn btn-primary">
 </form>
 {% endblock body_block %}
