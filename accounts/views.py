@@ -1,3 +1,19 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render, redirect
+from django.contrib.auth import authenticate, logout
+from . import forms
 
-# Create your views here.
+def signin(request):
+    if request.method == 'POST':
+        user = authenticate(request, username=request.POST['username'], password=request.POST['password'])
+        if user is not None:
+            return redirect('index')
+        else:
+            form = forms.SigninForm()
+    else:
+        form = forms.SigninForm()
+
+    return render(request, 'accounts/signin.html', {'form': form})
+
+def signout(request):
+    logout(request)
+    return redirect('index')
