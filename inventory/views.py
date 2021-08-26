@@ -9,11 +9,17 @@ class InventoryListView(ListView):
     model = models.Inventory
 
 class InventoryCreateView(LoginRequiredMixin, CreateView):
+    login_url = '/user/signin/'
+    redirect_field_name = 'redirect_to'
+
     model = models.Inventory
     fields = ['name', 'description', 'unit', 'count']
     success_url = reverse_lazy('inventory:list')
 
 class InventoryUpdateView(LoginRequiredMixin, UpdateView):
+    login_url = '/user/signin/'
+    redirect_field_name = 'redirect_to'
+
     model = models.Inventory
     fields = ['description', 'unit', 'count']
     template_name_suffix = '_update_form'

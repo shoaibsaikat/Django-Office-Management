@@ -41,9 +41,10 @@
               </div>
             </div>
         </nav>
-          
-        {% block body_block %}
-        {% endblock body_block %}
+        <div class="container">
+          {% block body_block %}
+          {% endblock body_block %}
+        </div>
     </div>
     <script src="{% static 'scripts/site.js' %}"></script>
 </body>
