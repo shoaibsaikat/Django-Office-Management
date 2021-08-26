@@ -23,4 +23,5 @@ urlpatterns = [
     path('', views.IndexPage, name='index'),
     path('admin/', admin.site.urls),
     path('user/', include('accounts.urls')),
+    path('inventory/', include('inventory.urls')),
 ]

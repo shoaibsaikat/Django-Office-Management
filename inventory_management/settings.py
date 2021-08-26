@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'bootstrap5',
     'accounts.apps.AccountsConfig',
     'inventory.apps.InventoryConfig',
 ]
@@ -140,3 +141,6 @@ LOGOUT_REDIRECT_URL = '/'
 
 # Registering custom user model for authentication
 #AUTH_USER_MODEL = 'accounts.User'
+
+
+DEFAULT_AUTO_FIELD='django.db.models.AutoField'
