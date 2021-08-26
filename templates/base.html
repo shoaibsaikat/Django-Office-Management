@@ -30,6 +30,7 @@
                 </ul>
                 <form class="d-flex">
                   {% if user.is_authenticated %}
+                    <span class="nav-link" style="color: black;"><strong>{{user.username}}</strong></span>
                     <a class="nav-link" href="{% url 'accounts:signout' %}">Logout</a>
                   {% else %}
                     <a class="nav-link" href="{% url 'accounts:signin' %}">Login</a>
@@ -42,6 +43,6 @@
         {% block body_block %}
         {% endblock body_block %}
     </div>
-    <script src="{% static 'scripts/script.js' %}"></script>
+    <script src="{% static 'scripts/site.js' %}"></script>
 </body>
 </html>
