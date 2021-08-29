@@ -6,7 +6,7 @@ from django.dispatch import receiver
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=CASCADE)
-    supervisor = models.ForeignKey(User, on_delete=CASCADE, related_name='subordinates')
+    supervisor = models.ForeignKey(User, on_delete=CASCADE, null=True, related_name='subordinates')
 
     def __str__(self):
         return str(self.user)
