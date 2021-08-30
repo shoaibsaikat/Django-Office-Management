@@ -5,8 +5,8 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=CASCADE)
-    supervisor = models.ForeignKey(User, on_delete=CASCADE, null=True, related_name='subordinates')
+    user = models.OneToOneField(User, on_delete=CASCADE, null=True, blank=True)
+    supervisor = models.ForeignKey(User, on_delete=CASCADE, null=True, blank=True, related_name='subordinates')
 
     def __str__(self):
         return str(self.user)
