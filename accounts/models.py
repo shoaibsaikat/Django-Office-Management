@@ -18,4 +18,8 @@ class Profile(models.Model):
 
     @receiver(post_save, sender=User)
     def save_profile(sender, instance, **kwargs):
+        try:
+            profile = instance.profile
+        except:
+            profile = Profile.objects.create(user=instance)
         instance.profile.save()
