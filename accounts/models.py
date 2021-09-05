@@ -22,4 +22,4 @@ class Profile(models.Model):
             profile = instance.profile
         except:
             profile = Profile.objects.create(user=instance)
-        instance.profile.save()
+        profile.save()
