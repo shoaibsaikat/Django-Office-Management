@@ -1,8 +1,12 @@
 from django import forms
 from . import models
 
-class InventoryForm(forms.ModelForm):
-    class Meta:
-        model = models.Post
-        fields = ['name', 'description', 'count']
+# from django.utils.translation import gettext_lazy as _
 
+class RequisitionForm(forms.ModelForm):
+    class Meta:
+        model = models.Requisition
+        fields = ('title', 'inventory', 'manager', 'amount', 'comment')
+        labels = {
+            'manager': 'Authority',
+        }
