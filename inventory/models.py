@@ -18,6 +18,7 @@ class Requisition(models.Model):
     title = models.CharField(max_length=255)
     amount = models.IntegerField()
     comment = models.TextField(null=True, blank=True)
+    approved = models.BooleanField(null=True, blank=True, default=False)
 
     def __str__(self):
         return self.title

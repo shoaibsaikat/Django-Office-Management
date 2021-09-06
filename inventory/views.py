@@ -1,6 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import fields
 from django.urls import reverse_lazy
 from django.views.generic import ListView
+from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 
 from . import forms
@@ -37,3 +39,10 @@ class RequisitionCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
+
+class RequisitionListView(ListView):
+    model = models.Requisition
+
+class RequisitionDetailView(DetailView):
+    model = models.Requisition
+    fields = ('title', 'inventory', 'user', 'amount', 'comment')
