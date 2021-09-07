@@ -1,15 +1,21 @@
 {% extends "base.html" %}
 
 {% block body_block %}
-<h3>Requisition Detail</h3>
+<h3>{{ object.title }}</h3>
 <br>
 
 <form method="post">
     {% csrf_token %}
-    <strong>{{ object.title }}</strong>
+    <strong>Details:</strong>
     <p>{{ object.user }} requested for {{ object.amount }} {{ object.inventory.unit }}(s) of {{ object.inventory.name }}</p>
-    <p>{{ object.comment }}</p>
+
+    {% if object.comment %}
+        <strong>Comment:</strong>
+        <p>{{ object.comment }}</p>
+    {% endif %}
+    <br>
     <br>
     <input type="submit" value="Approve" class="btn btn-primary">
+    
 </form>
 {% endblock body_block %}

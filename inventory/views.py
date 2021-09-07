@@ -4,6 +4,8 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
+from django.views import View
+from django.shortcuts import render, redirect
 
 from . import forms
 from . import models
@@ -48,6 +50,12 @@ class RequisitionListView(LoginRequiredMixin, ListView):
         context['object_list'] = models.Requisition.objects.filter(manager=self.request.user, approved=False)
         return context
 
-class RequisitionDetailView(LoginRequiredMixin, DetailView):
-    model = models.Requisition
-    fields = ('title', 'inventory', 'user', 'amount', 'comment')
+class RequisitionDetailView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        requisitions = models.Requisition.objects.filter(pk=kwargs['pk'], manager=self.request.user, approved=False)
+        return render(request, 'inventory/requisition_detail.html', {'object': requisitions.first()})
+    def post(self, request, *args, **kwargs):
+        requisition = models.Requisition.objects.filter(pk=kwargs['pk'], manager=self.request.user, approved=False).first()
+        requisition.approved = True
+        requisition.save()
+        return redirect('inventory:requisition_list')
