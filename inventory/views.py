@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import fields
+from django.db.models import fields, manager
 from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.views.generic.detail import DetailView
@@ -40,9 +40,14 @@ class RequisitionCreateView(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
-class RequisitionListView(ListView):
+class RequisitionListView(LoginRequiredMixin, ListView):
     model = models.Requisition
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['object_list'] = models.Requisition.objects.filter(manager=self.request.user, approved=False)
+        return context
 
-class RequisitionDetailView(DetailView):
+class RequisitionDetailView(LoginRequiredMixin, DetailView):
     model = models.Requisition
     fields = ('title', 'inventory', 'user', 'amount', 'comment')
