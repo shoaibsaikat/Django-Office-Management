@@ -6,7 +6,7 @@ from . import models
 class RequisitionForm(forms.ModelForm):
     class Meta:
         model = models.Requisition
-        fields = ('title', 'inventory', 'manager', 'amount', 'comment')
+        fields = ('title', 'inventory', 'approver', 'amount', 'comment')
         labels = {
-            'manager': 'Authority',
+            'approver': 'Authority',
         }

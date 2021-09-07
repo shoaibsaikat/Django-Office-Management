@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 class Inventory(models.Model):
     name = models.CharField(max_length=255, unique=True)
     description = models.TextField(null=True, blank=True)
-    unit = models.CharField(max_length=255, default='item')
+    unit = models.CharField(max_length=255, default='unit')
     count = models.IntegerField()
 
     def __str__(self):
@@ -14,11 +14,11 @@ class Inventory(models.Model):
 class Requisition(models.Model):
     inventory = models.ForeignKey(Inventory, on_delete=CASCADE)
     user = models.ForeignKey(User, on_delete=CASCADE, related_name='requests')
-    manager = models.ForeignKey(User, on_delete=CASCADE, related_name='requested_items')
+    approver = models.ForeignKey(User, on_delete=CASCADE, related_name='requested_items')
+    approved = models.BooleanField(null=True, blank=True, default=False)
     title = models.CharField(max_length=255)
     amount = models.IntegerField()
     comment = models.TextField(null=True, blank=True)
-    approved = models.BooleanField(null=True, blank=True, default=False)
 
     def __str__(self):
         return self.title

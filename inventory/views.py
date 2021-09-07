@@ -1,5 +1,4 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import fields, manager
 from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.views.generic.detail import DetailView
@@ -47,15 +46,15 @@ class RequisitionListView(LoginRequiredMixin, ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['object_list'] = models.Requisition.objects.filter(manager=self.request.user, approved=False)
+        context['object_list'] = models.Requisition.objects.filter(approver=self.request.user, approved=False)
         return context
 
 class RequisitionDetailView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
-        requisitions = models.Requisition.objects.filter(pk=kwargs['pk'], manager=self.request.user, approved=False)
+        requisitions = models.Requisition.objects.filter(pk=kwargs['pk'], approver=self.request.user, approved=False)
         return render(request, 'inventory/requisition_detail.html', {'object': requisitions.first()})
     def post(self, request, *args, **kwargs):
-        requisition = models.Requisition.objects.filter(pk=kwargs['pk'], manager=self.request.user, approved=False).first()
+        requisition = models.Requisition.objects.filter(pk=kwargs['pk'], approver=self.request.user, approved=False).first()
         requisition.approved = True
         requisition.save()
         return redirect('inventory:requisition_list')
