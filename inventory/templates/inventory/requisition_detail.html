@@ -7,12 +7,19 @@
 <form method="post">
     {% csrf_token %}
     <strong>Details:</strong>
-    <p>{{ object.user }} requested for {{ object.amount }} {{ object.inventory.unit }}(s) of {{ object.inventory.name }}</p>
+    <p>{{ requisition.user }} requested for {{ requisition.amount }} {{ requisition.inventory.unit }}(s) of {{ requisition.inventory.name }}</p>
 
     {% if object.comment %}
         <strong>Comment:</strong>
-        <p>{{ object.comment }}</p>
+        <p>{{ requisition.comment }}</p>
     {% endif %}
+    <label for="distributor">Distributor:</label>
+    <select id="distributor" name="distributor" class="form-select">
+        <option selected disabled>Open this select menu</option>
+        {% for user in users %}
+            <option value="{{user.id}}">{{user.username}}</option>
+        {% endfor %}
+    </select>
     <br>
     <br>
     <input type="submit" value="Approve" class="btn btn-primary">

@@ -5,6 +5,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 from django.views import View
 from django.shortcuts import render, redirect
+# import logging
 
 from . import forms
 from . import models
@@ -51,10 +52,23 @@ class RequisitionListView(LoginRequiredMixin, ListView):
 
 class RequisitionDetailView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
-        requisitions = models.Requisition.objects.filter(pk=kwargs['pk'], approver=self.request.user, approved=False)
-        return render(request, 'inventory/requisition_detail.html', {'object': requisitions.first()})
+        requisition = models.Requisition.objects.filter(pk=kwargs['pk'], approver=self.request.user, approved=False).first()
+        users = models.User.objects.all()
+
+        return render(request, 'inventory/requisition_detail.html', {'requisition': requisition, 'users': users})
     def post(self, request, *args, **kwargs):
         requisition = models.Requisition.objects.filter(pk=kwargs['pk'], approver=self.request.user, approved=False).first()
         requisition.approved = True
+        requisition.distributor = models.User.objects.filter(pk=request.POST['distributor']).first()
         requisition.save()
+        # logger = logging.getLogger(__name__)
+        # logger.warning('distributor: {}'.format(request.POST['distributor']))
         return redirect('inventory:requisition_list')
+
+class RequisitionApprovedListView(LoginRequiredMixin, ListView):
+    model = models.Requisition
+    
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context['object_list'] = models.Requisition.objects.filter(approver=self.request.user, approved=False)
+    #     return context
