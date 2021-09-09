@@ -21,6 +21,7 @@ class Requisition(models.Model):
     title = models.CharField(max_length=255)
     amount = models.IntegerField()
     comment = models.TextField(null=True, blank=True)
+    # TODO: add date support
 
     def __str__(self):
         return self.title

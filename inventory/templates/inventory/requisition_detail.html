@@ -14,6 +14,7 @@
         <p>{{ requisition.comment }}</p>
     {% endif %}
     <label for="distributor"><strong>Distributor</strong></label>
+    <!-- TODO: make distributor mandatory -->
     <select id="distributor" name="distributor" class="form-select" required>
         <option selected disabled>Select distributor</option>
         {% for user in users %}

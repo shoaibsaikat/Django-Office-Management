@@ -77,6 +77,11 @@ class RequisitionApprovedListView(LoginRequiredMixin, ListView):
         context['object_list'] = models.Requisition.objects.filter(distributor=self.request.user, distributed=False)
         return context
 
+class RequisitionHistoryList(ListView):
+    model = models.Requisition
+    template_name = 'inventory/requisition_history.html'
+    # TODO: sort by latest
+
 @login_required
 def requisitionDistributed(request, pk):
     requisition = models.Requisition.objects.filter(pk=pk).first()
