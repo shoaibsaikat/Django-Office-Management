@@ -44,12 +44,19 @@ class RequisitionCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 class RequisitionListView(LoginRequiredMixin, ListView):
-    model = models.Requisition
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['object_list'] = models.Requisition.objects.filter(approver=self.request.user, approved=False)
-        return context
+
+    def get(self, request, *args, **kwargs):
+        requisitionList = models.Requisition.objects.filter(approver=self.request.user, approved=False)
+        users = models.User.objects.all()
+        return render(request, 'inventory/requisition_list.html', {'object_list': requisitionList, 'distributor_list': users})
+
+    def post(self, request, *args, **kwargs):
+        requisition = models.Requisition.objects.filter(pk=request.POST['pk']).first()
+        requisition.approved = True
+        if request.POST.get('distributor', False):
+            requisition.distributor = models.User.objects.filter(pk=request.POST['distributor']).first()
+            requisition.save()
+        return redirect('inventory:requisition_list')
 
 class RequisitionDetailView(LoginRequiredMixin, View):
 
@@ -61,7 +68,7 @@ class RequisitionDetailView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         # logger = logging.getLogger(__name__)
         # logger.warning('distributor: {}'.format(request.POST['distributor']))
-        requisition = models.Requisition.objects.filter(pk=kwargs['pk'], approver=self.request.user, approved=False).first()
+        requisition = models.Requisition.objects.filter(pk=kwargs['pk']).first()
         requisition.approved = True
         if request.POST.get('distributor', False):
             requisition.distributor = models.User.objects.filter(pk=request.POST['distributor']).first()
@@ -88,3 +95,4 @@ def requisitionDistributed(request, pk):
     requisition.distributed = True
     requisition.save()
     return redirect('inventory:requisition_approved_list')
+
