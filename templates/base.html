@@ -13,7 +13,7 @@
 </head>
 <body>
     <div class="container">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <nav class="navbar navbar-expand-sm navbar-light bg-light">
             <div class="container-fluid">
               <a class="navbar-brand" href="/">Home</a>
               <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,6 +36,7 @@
                 <form class="d-flex">
                   {% if user.is_authenticated %}
                     <span class="nav-link" style="color: black;"><strong>{{user.username}}</strong></span>
+                    <a class="nav-link" href="{% url 'inventory:requisition_approved_list' %}">Distribution</a>
                     <a class="nav-link" href="{% url 'inventory:requisition_list' %}">Requests</a>
                     <a class="nav-link" href="{% url 'accounts:signout' %}">Logout</a>
                   {% else %}

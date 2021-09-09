@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.views.generic.detail import DetailView
@@ -51,25 +52,34 @@ class RequisitionListView(LoginRequiredMixin, ListView):
         return context
 
 class RequisitionDetailView(LoginRequiredMixin, View):
+
     def get(self, request, *args, **kwargs):
         requisition = models.Requisition.objects.filter(pk=kwargs['pk'], approver=self.request.user, approved=False).first()
         users = models.User.objects.all()
-
         return render(request, 'inventory/requisition_detail.html', {'requisition': requisition, 'users': users})
+
     def post(self, request, *args, **kwargs):
         # logger = logging.getLogger(__name__)
+        # logger.warning('distributor: {}'.format(request.POST['distributor']))
         requisition = models.Requisition.objects.filter(pk=kwargs['pk'], approver=self.request.user, approved=False).first()
         requisition.approved = True
         if request.POST.get('distributor', False):
             requisition.distributor = models.User.objects.filter(pk=request.POST['distributor']).first()
             requisition.save()
-        # logger.warning('distributor: {}'.format(request.POST['distributor']))
         return redirect('inventory:requisition_list')
 
 class RequisitionApprovedListView(LoginRequiredMixin, ListView):
     model = models.Requisition
-    
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context['object_list'] = models.Requisition.objects.filter(approver=self.request.user, approved=False)
-    #     return context
+    template_name = 'inventory/requisition_approved_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['object_list'] = models.Requisition.objects.filter(distributor=self.request.user, distributed=False)
+        return context
+
+@login_required
+def requisitionDistributed(request, pk):
+    requisition = models.Requisition.objects.filter(pk=pk).first()
+    requisition.distributed = True
+    requisition.save()
+    return redirect('inventory:requisition_approved_list')
