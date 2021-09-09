@@ -8,7 +8,7 @@
         <li class="list-group-item">
             <form class="row" method="POST">
                 {% csrf_token %}
-                <a class="col-md-8" href="{% url 'inventory:requisition_detail' pk=item.pk %}">{{ item.user }} requested for {{ item.amount }} {{ item.inventory.unit }}(s) of {{ item.inventory.name }}</a>
+                <a class="col-md-8" href="{% url 'inventory:requisition_detail_form' pk=item.pk %}">{{ item.user }} requested for {{ item.amount }} {{ item.inventory.unit }}(s) of {{ item.inventory.name }}</a>
                 <label for="pk" hidden></label>
                 <input type="text" value="{{ item.pk }}" id="pk" name="pk" hidden>
                 <div class="col-md-3">

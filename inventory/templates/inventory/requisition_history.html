@@ -20,12 +20,24 @@
         {% for item in object_list %}
             <tr>
                 <th scope="row">{{item.pk}}</th>
-                <td>{{ item.title }}</td>
+                <td><a href="{% url 'inventory:requisition_detail' pk=item.pk %}">{{ item.title }}</a></td>
                 <td>{{ item.inventory.name }}</td>
                 <td>{{ item.amount }}</td>
                 <td>{{ item.inventory.unit }}</td>
-                <td>{{ item.approved }}</td>
-                <td>{{ item.distributed }}</td>
+                <td>
+                    {% if item.approved %}
+                        <span class="text-success">Yes</span>
+                    {% else %}
+                        <span class="text-danger"><strong>No</strong></span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if item.distributed %}
+                        <span class="text-success">Yes</span>
+                    {% else %}
+                        <span class="text-danger"><strong>No</strong></span>
+                    {% endif %}
+                </td>
             </tr>
         {% endfor %}
     </tbody>

@@ -58,12 +58,12 @@ class RequisitionListView(LoginRequiredMixin, ListView):
             requisition.save()
         return redirect('inventory:requisition_list')
 
-class RequisitionDetailView(LoginRequiredMixin, View):
+class RequisitionDetailFormView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         requisition = models.Requisition.objects.filter(pk=kwargs['pk'], approver=self.request.user, approved=False).first()
         users = models.User.objects.all()
-        return render(request, 'inventory/requisition_detail.html', {'requisition': requisition, 'users': users})
+        return render(request, 'inventory/requisition_detail_form.html', {'requisition': requisition, 'users': users})
 
     def post(self, request, *args, **kwargs):
         # logger = logging.getLogger(__name__)
@@ -74,6 +74,9 @@ class RequisitionDetailView(LoginRequiredMixin, View):
             requisition.distributor = models.User.objects.filter(pk=request.POST['distributor']).first()
             requisition.save()
         return redirect('inventory:requisition_list')
+
+class RequisitionDetailView(LoginRequiredMixin, DetailView):
+    model = models.Requisition
 
 class RequisitionApprovedListView(LoginRequiredMixin, ListView):
     model = models.Requisition
@@ -87,6 +90,11 @@ class RequisitionApprovedListView(LoginRequiredMixin, ListView):
 class RequisitionHistoryList(ListView):
     model = models.Requisition
     template_name = 'inventory/requisition_history.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['object_list'] = models.Requisition.objects.order_by('-pk')
+        return context
     # TODO: sort by latest
 
 @login_required

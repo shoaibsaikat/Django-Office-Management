@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block body_block %}
+<h3>{{ object.title }}</h3>
+<br>
+
+<form method="post">
+    {% csrf_token %}
+    <strong>Details:</strong>
+    <p>{{ requisition.user }} requested for {{ requisition.amount }} {{ requisition.inventory.unit }}(s) of {{ requisition.inventory.name }}</p>
+
+    {% if object.comment %}
+        <strong>Comment:</strong>
+        <p>{{ requisition.comment }}</p>
+    {% endif %}
+    <label for="distributor"><strong>Distributor</strong></label>
+    <select id="distributor" name="distributor" class="form-select" required>
+        <option value="" selected disabled>Select distributor</option>
+        {% for user in users %}
+            <option value="{{user.id}}">{{user.username}}</option>
+        {% endfor %}
+    </select>
+    <br>
+    <br>
+    <input type="submit" value="Approve" class="btn btn-primary">
+    
+</form>
+{% endblock body_block %}
