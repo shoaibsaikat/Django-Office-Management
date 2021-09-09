@@ -5,7 +5,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 from django.views import View
 from django.shortcuts import render, redirect
-# import logging
+import logging
 
 from . import forms
 from . import models
@@ -57,11 +57,12 @@ class RequisitionDetailView(LoginRequiredMixin, View):
 
         return render(request, 'inventory/requisition_detail.html', {'requisition': requisition, 'users': users})
     def post(self, request, *args, **kwargs):
+        # logger = logging.getLogger(__name__)
         requisition = models.Requisition.objects.filter(pk=kwargs['pk'], approver=self.request.user, approved=False).first()
         requisition.approved = True
-        requisition.distributor = models.User.objects.filter(pk=request.POST['distributor']).first()
-        requisition.save()
-        # logger = logging.getLogger(__name__)
+        if request.POST.get('distributor', False):
+            requisition.distributor = models.User.objects.filter(pk=request.POST['distributor']).first()
+            requisition.save()
         # logger.warning('distributor: {}'.format(request.POST['distributor']))
         return redirect('inventory:requisition_list')
 
