@@ -1,15 +1,18 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 from django.views import View
 from django.shortcuts import render, redirect
+from django.db import transaction
 import logging
 
 from . import forms
 from . import models
+import inventory
 
 class InventoryListView(ListView):
     model = models.Inventory
@@ -98,9 +101,17 @@ class RequisitionHistoryList(ListView):
     # TODO: sort by latest
 
 @login_required
+@transaction.atomic
 def requisitionDistributed(request, pk):
     requisition = models.Requisition.objects.filter(pk=pk).first()
-    requisition.distributed = True
-    requisition.save()
+    inventory = models.Inventory.objects.filter(pk=requisition.inventory.pk).first()
+    if inventory.count < requisition.amount:
+        messages.error(request, 'Distribution failed! Inventory low, please add items to the inventory first')
+    else:
+        requisition.distributed = True
+        inventory.count = inventory.count - requisition.amount 
+        requisition.save()
+        inventory.save()
+        
     return redirect('inventory:requisition_approved_list')
 

@@ -6,7 +6,7 @@ class Inventory(models.Model):
     name = models.CharField(max_length=255, unique=True)
     description = models.TextField(null=True, blank=True)
     unit = models.CharField(max_length=255, default='unit')
-    count = models.IntegerField(blank=True, default=0)
+    count = models.PositiveIntegerField(blank=True, default=0)
 
     def __str__(self):
         return self.name
@@ -19,7 +19,7 @@ class Requisition(models.Model):
     distributor = models.ForeignKey(User, on_delete=CASCADE, null=True, related_name='approved_items')
     distributed = models.BooleanField(null=True, blank=True, default=False)
     title = models.CharField(max_length=255)
-    amount = models.IntegerField()
+    amount = models.PositiveIntegerField()
     comment = models.TextField(null=True, blank=True)
     # TODO: add date support
 
