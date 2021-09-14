@@ -8,6 +8,8 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.views import View
 from django.shortcuts import render, redirect
 from django.db import transaction
+
+from datetime import datetime
 import logging
 
 from . import forms
@@ -58,6 +60,7 @@ class RequisitionListView(LoginRequiredMixin, ListView):
         requisition.approved = True
         if request.POST.get('distributor', False):
             requisition.distributor = models.User.objects.filter(pk=request.POST['distributor']).first()
+            requisition.approveDate = datetime.now()
             requisition.save()
         return redirect('inventory:requisition_list')
 
@@ -75,6 +78,7 @@ class RequisitionDetailFormView(LoginRequiredMixin, View):
         requisition.approved = True
         if request.POST.get('distributor', False):
             requisition.distributor = models.User.objects.filter(pk=request.POST['distributor']).first()
+            requisition.approveDate = datetime.now()
             requisition.save()
         return redirect('inventory:requisition_list')
 
@@ -109,6 +113,7 @@ def requisitionDistributed(request, pk):
         messages.error(request, 'Distribution failed! Inventory low, please add items to the inventory first')
     else:
         requisition.distributed = True
+        requisition.distributionDate = datetime.now()
         inventory.count = inventory.count - requisition.amount 
         requisition.save()
         inventory.save()
