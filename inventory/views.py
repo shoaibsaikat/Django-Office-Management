@@ -1,6 +1,7 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
+from django.http import request
 from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.views.generic.detail import DetailView
@@ -14,12 +15,11 @@ import logging
 
 from . import forms
 from . import models
-import inventory
 
 class InventoryListView(ListView):
     model = models.Inventory
 
-class InventoryCreateView(LoginRequiredMixin, CreateView):
+class InventoryCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     login_url = '/user/signin/'
     redirect_field_name = 'redirect_to'
 
@@ -27,7 +27,10 @@ class InventoryCreateView(LoginRequiredMixin, CreateView):
     fields = ['name', 'description', 'unit', 'count']
     success_url = reverse_lazy('inventory:list')
 
-class InventoryUpdateView(LoginRequiredMixin, UpdateView):
+    def test_func(self):
+        return self.request.user.profile.canDistributeInventory or self.request.user.profile.canApproveInventory
+
+class InventoryUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     login_url = '/user/signin/'
     redirect_field_name = 'redirect_to'
 
@@ -35,6 +38,9 @@ class InventoryUpdateView(LoginRequiredMixin, UpdateView):
     fields = ['description', 'unit', 'count']
     template_name_suffix = '_update_form'
     success_url = reverse_lazy('inventory:list')
+
+    def test_func(self):
+        return self.request.user.profile.canDistributeInventory or self.request.user.profile.canApproveInventory
 
 class RequisitionCreateView(LoginRequiredMixin, CreateView):
     login_url = '/user/signin/'
@@ -48,7 +54,7 @@ class RequisitionCreateView(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
-class RequisitionListView(LoginRequiredMixin, ListView):
+class RequisitionListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 
     def get(self, request, *args, **kwargs):
         requisitionList = models.Requisition.objects.filter(approver=self.request.user, approved=False)
@@ -64,7 +70,10 @@ class RequisitionListView(LoginRequiredMixin, ListView):
             requisition.save()
         return redirect('inventory:requisition_list')
 
-class RequisitionDetailFormView(LoginRequiredMixin, View):
+    def test_func(self):
+        return self.request.user.profile.canApproveInventory
+
+class RequisitionDetailFormView(LoginRequiredMixin, UserPassesTestMixin, View):
 
     def get(self, request, *args, **kwargs):
         requisition = models.Requisition.objects.filter(pk=kwargs['pk'], approver=self.request.user, approved=False).first()
@@ -82,10 +91,16 @@ class RequisitionDetailFormView(LoginRequiredMixin, View):
             requisition.save()
         return redirect('inventory:requisition_list')
 
-class RequisitionDetailView(LoginRequiredMixin, DetailView):
+    def test_func(self):
+        return self.request.user.profile.canDistributeInventory or self.request.user.profile.canApproveInventory
+
+class RequisitionDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = models.Requisition
 
-class RequisitionApprovedListView(LoginRequiredMixin, ListView):
+    def test_func(self):
+        return self.request.user.profile.canDistributeInventory or self.request.user.profile.canApproveInventory
+
+class RequisitionApprovedListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = models.Requisition
     template_name = 'inventory/requisition_approved_list.html'
 
@@ -94,7 +109,10 @@ class RequisitionApprovedListView(LoginRequiredMixin, ListView):
         context['object_list'] = models.Requisition.objects.filter(distributor=self.request.user, distributed=False)
         return context
 
-class RequisitionHistoryList(ListView):
+    def test_func(self):
+        return self.request.user.profile.canDistributeInventory
+
+class RequisitionHistoryList(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = models.Requisition
     template_name = 'inventory/requisition_history.html'
 
@@ -102,9 +120,13 @@ class RequisitionHistoryList(ListView):
         context = super().get_context_data(**kwargs)
         context['object_list'] = models.Requisition.objects.order_by('-pk')
         return context
-    # TODO: sort by latest
+        # TODO: sort by latest
+
+    def test_func(self):
+        return self.request.user.profile.canDistributeInventory or self.request.user.profile.canApproveInventory
 
 @login_required
+@user_passes_test(lambda u: u.profile.canDistributeInventory)
 @transaction.atomic
 def requisitionDistributed(request, pk):
     requisition = models.Requisition.objects.filter(pk=pk).first()

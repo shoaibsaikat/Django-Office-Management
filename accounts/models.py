@@ -7,6 +7,8 @@ from django.dispatch import receiver
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=CASCADE, null=True, blank=True)
     supervisor = models.ForeignKey(User, on_delete=CASCADE, null=True, blank=True, related_name='subordinates')
+    canDistributeInventory = models.BooleanField(default=False, blank=True)
+    canApproveInventory = models.BooleanField(default=False, blank=True)
 
     def __str__(self):
         return str(self.user)

@@ -20,22 +20,28 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto">
-        <li class="nav-item active">
-          <strong><a class="nav-link" href="{% url 'inventory:list' %}">Inventory</a></strong>
-        </li>
-        <li class="nav-item active">
-          <strong><a class="nav-link" href="{% url 'inventory:requisition_history' %}">History</a></strong>
-        </li>
+        {% if user.profile.canApproveInventory or user.profile.canDistributeInventory %}
+          <li class="nav-item active">
+            <strong><a class="nav-link" href="{% url 'inventory:list' %}">Inventory</a></strong>
+          </li>
+          <li class="nav-item active">
+            <strong><a class="nav-link" href="{% url 'inventory:requisition_history' %}">History</a></strong>
+          </li>
+        {% endif %}
         {% if user.is_authenticated %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'inventory:create_requisition' %}">New Request</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'inventory:requisition_list' %}">Request List</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'inventory:requisition_approved_list' %}">Distribution List</a>
-          </li>
+          {% if user.profile.canApproveInventory %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'inventory:requisition_list' %}">Request List</a>
+            </li>
+          {% endif %}
+          {% if user.profile.canDistributeInventory %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'inventory:requisition_approved_list' %}">Distribution List</a>
+            </li>
+          {% endif %}
         {% endif %}
       </ul>
       <ul class="navbar-nav">

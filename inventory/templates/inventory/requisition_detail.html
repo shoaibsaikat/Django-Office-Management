@@ -8,6 +8,15 @@
     {% csrf_token %}
     <strong>{{ requisition.title }}</strong>
     <p>{{ requisition.user }} requested for {{ requisition.amount }} {{ requisition.inventory.unit }}(s) of {{ requisition.inventory.name }}</p>
+    <p><strong>Status:</strong>
+        {% if requisition.distributed %}
+            <span class="text-success">Distributed</span>
+        {%  elif requisition.approved %}
+            <span class="text-warning">Approved</span>
+        {% else %}
+            <span class="text-danger">Waiting for the approval</span>
+        {% endif %}
+    </p>
 
     {% if object.comment %}
         <strong>Comment:</strong>
