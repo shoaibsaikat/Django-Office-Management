@@ -1,6 +1,7 @@
 # Django-Inventory-Management
 A simple inventory management system using Django
 
+# Installation
 Requirement:
 1. pip install django-bootstrap-v5
 2. pip install django mysqlclient
@@ -34,4 +35,7 @@ Troubleshooting:
 2. Add "Include /etc/phpmyadmin/apache.conf"
 3. sudo service apache2 restart
 
+# Operation
+1. To make an approver account account should have canApproveInventory permission in Profile table.
+2. To make a distributor account account should have canDistributeInventory permission in Profile table.
 
