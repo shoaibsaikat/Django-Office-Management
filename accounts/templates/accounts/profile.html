@@ -5,27 +5,29 @@
 {% bootstrap_javascript %}
 
 {% block body_block %}
+<div class="card-body">
 {% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
-        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-            <span class="text-danger">{{ message }}</span>
-        {% else %}
-            {{ message }}
-        {% endif %}
-    </li>
-    {% endfor %}
-</ul>
-{% endif %}
-<form method="post">
-    {% csrf_token %}
-    {% bootstrap_form form %}
-    <input type="submit" value="Save" class="btn btn-primary">
-    {% if form.non_field_errors %}
-        {% for error in form.non_field_errors %}
-            {{error}}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                <span class="text-danger">{{ message }}</span>
+            {% else %}
+                {{ message }}
+            {% endif %}
+        </li>
         {% endfor %}
+    </ul>
     {% endif %}
-</form>
+    <form method="post">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <input type="submit" value="Save" class="btn btn-primary">
+        {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}
+                {{error}}
+            {% endfor %}
+        {% endif %}
+    </form>
+</div>
 {% endblock body_block %}

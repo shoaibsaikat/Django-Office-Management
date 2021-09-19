@@ -12,54 +12,57 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body class="container">
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="/"><strong>Home</strong></a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+  <div class="card bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light" style="margin-left: 1em;">
+      <a class="navbar-brand" href="/"><strong>Home</strong></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto">
-        <!-- {% if user.profile.canApproveInventory or user.profile.canDistributeInventory %}
-          <li class="nav-item active">
-            <strong><a class="nav-link" href="{% url 'inventory:list' %}">Inventory</a></strong>
-          </li>
-          <li class="nav-item active">
-            <strong><a class="nav-link" href="{% url 'inventory:requisition_history' %}">Requisition History</a></strong>
-          </li>
-        {% endif %}
-        {% if user.is_authenticated %}
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'inventory:create_requisition' %}">Request a Item</a>
-          </li>
-          {% if user.profile.canApproveInventory %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'inventory:requisition_list' %}">Item Request List</a>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto">
+          <!-- {% if user.profile.canApproveInventory or user.profile.canDistributeInventory %}
+            <li class="nav-item active">
+              <strong><a class="nav-link" href="{% url 'inventory:list' %}">Inventory</a></strong>
+            </li>
+            <li class="nav-item active">
+              <strong><a class="nav-link" href="{% url 'inventory:requisition_history' %}">Requisition History</a></strong>
             </li>
           {% endif %}
-          {% if user.profile.canDistributeInventory %}
+          {% if user.is_authenticated %}
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'inventory:requisition_approved_list' %}">Distribution List</a>
+              <a class="nav-link" href="{% url 'inventory:create_requisition' %}">Request a Item</a>
+            </li>
+            {% if user.profile.canApproveInventory %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'inventory:requisition_list' %}">Item Request List</a>
+              </li>
+            {% endif %}
+            {% if user.profile.canDistributeInventory %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'inventory:requisition_approved_list' %}">Distribution List</a>
+              </li>
+            {% endif %}
+          {% endif %} -->
+        </ul>
+        <ul class="navbar-nav" style="margin-right: 1em;">
+          {% if user.is_authenticated %}
+            <li class="nav-item">
+              <a class="navbar-brand" href="{% url 'accounts:change_profile' %}">@<u><em><strong>{{user.username}}</strong></em></u></a>
+            </li>
+            <li class="nav-item">
+              <a class="btn btn-outline-success" href="{% url 'accounts:signout' %}">Logout</a>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a class="btn btn-outline-success" href="{% url 'accounts:signin' %}">Login</a>
             </li>
           {% endif %}
-        {% endif %} -->
-      </ul>
-      <ul class="navbar-nav">
-        {% if user.is_authenticated %}
-          <li class="nav-item">
-            <a class="navbar-brand" href="{% url 'accounts:change_profile' %}">@<u><em><strong>{{user.username}}</strong></em></u></a>
-          </li>
-          <li class="nav-item">
-            <a class="btn btn-outline-success" href="{% url 'accounts:signout' %}">Logout</a>
-          </li>
-        {% else %}
-          <li class="nav-item">
-            <a class="btn btn-outline-success" href="{% url 'accounts:signin' %}">Login</a>
-          </li>
-        {% endif %}
-      </ul>
-    </div>
-  </nav>
+        </ul>
+      </div>
+    </nav>
+  </div>
+  <br>
   <div class="container card bg-light">
     <br>
     <div class="row">
@@ -73,6 +76,7 @@
           <div class="list-group">
             <a class="nav-link list-group-item" href="{% url 'accounts:change_password' %}">Change Password</a>
           </div>
+          <br>
           <!-- inventory -->
           <div class="card bg-light">
             <div class="card-header">Inventory</div>
@@ -94,6 +98,7 @@
               </div>
             </div>
           </div>
+          <br>
           <!-- leave -->
           <div class="card bg-light">
             <div class="card-header">Leave</div>
@@ -108,6 +113,7 @@
         </div>
       {% endif %}
     </div>
+    <br>
     <div class="card bg-light">
       <div class="card-body">
         <div><small>&copy;Copyright protected by, Mina Shoaib Rahman, 2021</small></div>
