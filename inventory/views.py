@@ -120,7 +120,6 @@ class RequisitionHistoryList(LoginRequiredMixin, UserPassesTestMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['object_list'] = models.Requisition.objects.order_by('-pk')
         return context
-        # TODO: sort by latest
 
     def test_func(self):
         return self.request.user.profile.canDistributeInventory or self.request.user.profile.canApproveInventory

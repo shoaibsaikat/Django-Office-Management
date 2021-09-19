@@ -7,11 +7,34 @@
 {% block body_block %}
 <h3>My Leaves</h3>
 <br>
-<ul class="list-group">
-    {% for item in object_list %}
-        <li class="list-group-item">{{ item.title }} - {{ item.startDate }} - {{ item.endDate }} - {{ item.approved }}</li>
-    {% empty %}
-        <li>No items yet.</li>
-    {% endfor %}
-</ul>
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Title</th>
+        <th scope="col">Start Date</th>
+        <th scope="col">End Date</th>
+        <th scope="col">Day(s)</th>
+        <th scope="col">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for item in object_list %}
+            <tr>
+                <th scope="row">{{item.pk}}</th>
+                <td>{{ item.title }}</td>
+                <td>{{ item.startDate|date:"N j, Y" }}</td>
+                <td>{{ item.endDate|date:"N j, Y" }}</td>
+                <td>{{ item.dayCount }}</td>
+                <td>
+                    {% if item.approved %}
+                        <span class="text-success">Approved</span>
+                    {% else %}
+                        <span class="text-danger">Processing</span>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock body_block %}
