@@ -5,13 +5,10 @@
 {% bootstrap_javascript %}
 
 {% block body_block %}
-<h3>Login</h3>
-<br>
-
 <form method="post">
     {% csrf_token %}
     {% bootstrap_form form %}
-    <input type="submit" value="Login" class="btn btn-primary">
+    <input type="submit" value="Save" class="btn btn-primary">
     {% if form.non_field_errors %}
         {% for error in form.non_field_errors %}
             {{error}}

@@ -1,10 +1,13 @@
+from inventory import models
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
-from .forms import SigninForm
+
+from .forms import SigninForm, ProfileForm
+from .models import Profile
 
 def signin(request):
     if request.method == 'POST':
@@ -36,5 +39,18 @@ def change_password(request):
     else:
         form = PasswordChangeForm(request.user)
     return render(request, 'accounts/change_password.html', {
+        'form': form
+    })
+
+@login_required
+def change_profile(request):
+    profile = Profile.objects.get(pk=request.user.pk)
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, instance=profile)
+        if form.is_valid():
+            profile.save()
+    else:
+        form = ProfileForm(instance=profile)
+    return render(request, 'accounts/profile.html', {
         'form': form
     })

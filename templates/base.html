@@ -47,7 +47,7 @@
       <ul class="navbar-nav">
         {% if user.is_authenticated %}
           <li class="nav-item">
-            <a class="navbar-brand" href="{% url 'accounts:change_password' %}">@<u><em><strong>{{user.username}}</strong></em></u></a>
+            <a class="navbar-brand" href="{% url 'accounts:change_profile' %}">@<u><em><strong>{{user.username}}</strong></em></u></a>
           </li>
           <li class="nav-item">
             <a class="btn btn-outline-success" href="{% url 'accounts:signout' %}">Logout</a>
@@ -61,8 +61,19 @@
     </div>
   </nav>
   <div class="container">
-    {% block body_block %}
-    {% endblock body_block %}
+    <div class="row">
+      <div class="col-md-10">
+        {% block body_block %}
+        {% endblock body_block %}
+      </div>
+      <div class="col-md-2 card bg-light" style="text-align: left;">
+        <div class="card-body">
+          <ul class="list-group">
+            <li><a href="{% url 'accounts:change_password' %}">Change Password</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
   </div>
   <script src="{% static 'scripts/site.js' %}"></script>
   <script src="{% static 'scripts/bootstrap.min.js' %}"></script>

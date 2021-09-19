@@ -145,3 +145,4 @@ LOGOUT_REDIRECT_URL = '/'
 
 
 DEFAULT_AUTO_FIELD='django.db.models.AutoField'
+#ALLOWED_HOSTS = ['172.16.100.14', 'localhost', '127.0.0.1']

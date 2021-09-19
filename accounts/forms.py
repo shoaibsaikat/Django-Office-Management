@@ -1,6 +1,9 @@
 from django import forms
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.db.models import fields
+
+from .models import Profile
 
 class SigninForm(forms.ModelForm):
     username = forms.CharField(
@@ -19,3 +22,8 @@ class SigninForm(forms.ModelForm):
         user = authenticate(username=cd.get('username'), password=cd.get('password'))
         if user is None:
             raise forms.ValidationError("wrong username or password")
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ('supervisor',)
