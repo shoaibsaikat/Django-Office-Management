@@ -9,6 +9,7 @@ class Profile(models.Model):
     supervisor = models.ForeignKey(User, on_delete=CASCADE, null=True, blank=True, related_name='subordinates')
     canDistributeInventory = models.BooleanField(default=False, blank=True)
     canApproveInventory = models.BooleanField(default=False, blank=True)
+    canApproveLeave = models.BooleanField(default=False, blank=True)
 
     def __str__(self):
         return str(self.user)

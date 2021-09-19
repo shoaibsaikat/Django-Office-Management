@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'bootstrap5',
     'accounts.apps.AccountsConfig',
     'inventory.apps.InventoryConfig',
+    'leave.apps.LeaveConfig',
 ]
 
 MIDDLEWARE = [

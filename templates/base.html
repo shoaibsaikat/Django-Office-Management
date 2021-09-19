@@ -66,13 +66,26 @@
         {% block body_block %}
         {% endblock body_block %}
       </div>
-      <div class="col-md-2 card bg-light" style="text-align: left;">
-        <div class="card-body">
-          <ul class="list-group">
-            <li><a href="{% url 'accounts:change_password' %}">Change Password</a></li>
-          </ul>
+      {% if user.is_authenticated %}
+        <div class="col-md-2" style="text-align: left;">
+          <div class="card bg-light">
+            <div class="card-body">
+              <div class="list-group">
+                <a href="{% url 'accounts:change_password' %}">Change Password</a>
+                <hr>
+                <a href="#">Apply for Leave</a>
+              </div>
+            </div>
+          </div>
+          <div class="card bg-light">
+            <div class="card-body">
+              <div class="list-group">
+                <a href="#">Leave Request List</a>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      {% endif %}
     </div>
   </div>
   <script src="{% static 'scripts/site.js' %}"></script>
