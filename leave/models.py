@@ -9,7 +9,7 @@ class Leave(models.Model):
     creationDate = models.DateTimeField(auto_now_add=True)
     approver = models.ForeignKey(User, on_delete=CASCADE, blank=False, related_name='leave_approvals')
     approved = models.BooleanField(default=False, blank=True)
-    approveDate = models.DateTimeField(default=None, blank=True)
+    approveDate = models.DateTimeField(default=None, blank=True, null=True)
     startDate = models.DateTimeField(default=None, blank=False)
     endDate = models.DateTimeField(default=None, blank=False)
     dayCount = models.PositiveIntegerField(default=0, blank=False)

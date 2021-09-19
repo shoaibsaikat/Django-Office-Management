@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{% block body_block %}
+<h3>My Leaves</h3>
+<br>
+<ul class="list-group">
+    {% for item in object_list %}
+        <li class="list-group-item">{{ item.title }} - {{ item.startDate }} - {{ item.endDate }} - {{ item.approved }}</li>
+    {% empty %}
+        <li>No items yet.</li>
+    {% endfor %}
+</ul>
+{% endblock body_block %}
