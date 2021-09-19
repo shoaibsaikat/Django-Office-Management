@@ -1,34 +1,34 @@
 {% extends "base.html" %}
 
 {% block body_block %}
-<h3>{{ object.title }}</h3>
-<br>
+<div class="card-header"><h3>{{ object.title }}</h3></div>
+<div class="card-body">
+    <form method="post">
+        {% csrf_token %}
+        <strong>{{ requisition.title }}</strong>
+        <p>{{ requisition.user }} requested for {{ requisition.amount }} {{ requisition.inventory.unit }}(s) of {{ requisition.inventory.name }}</p>
+        <p><strong>Status:</strong>
+            {% if requisition.distributed %}
+                <span class="text-success">Distributed</span>
+            {%  elif requisition.approved %}
+                <span class="text-warning">Approved</span>
+            {% else %}
+                <span class="text-danger">Waiting for the approval</span>
+            {% endif %}
+        </p>
 
-<form method="post">
-    {% csrf_token %}
-    <strong>{{ requisition.title }}</strong>
-    <p>{{ requisition.user }} requested for {{ requisition.amount }} {{ requisition.inventory.unit }}(s) of {{ requisition.inventory.name }}</p>
-    <p><strong>Status:</strong>
-        {% if requisition.distributed %}
-            <span class="text-success">Distributed</span>
-        {%  elif requisition.approved %}
-            <span class="text-warning">Approved</span>
-        {% else %}
-            <span class="text-danger">Waiting for the approval</span>
+        {% if object.comment %}
+            <strong>Comment:</strong>
+            <p>{{ requisition.comment }}</p>
         {% endif %}
-    </p>
-
-    {% if object.comment %}
-        <strong>Comment:</strong>
-        <p>{{ requisition.comment }}</p>
-    {% endif %}
-    {% if object.approver is not None %}
-        <label class="form-label" for="distributor"><strong>Approver</strong></label>
-        <input class="form-control" type="text" value="{{ requisition.approver }}" disabled>
-    {% endif %}
-    {% if object.distributor is not None %}
-        <label class="form-label" for="distributor"><strong>Distributor</strong></label>
-        <input class="form-control" type="text" value="{{ requisition.distributor }}" disabled>
-    {% endif %}
-</form>
+        {% if object.approver is not None %}
+            <label class="form-label" for="distributor"><strong>Approver</strong></label>
+            <input class="form-control" type="text" value="{{ requisition.approver }}" disabled>
+        {% endif %}
+        {% if object.distributor is not None %}
+            <label class="form-label" for="distributor"><strong>Distributor</strong></label>
+            <input class="form-control" type="text" value="{{ requisition.distributor }}" disabled>
+        {% endif %}
+    </form>
+</div>
 {% endblock body_block %}

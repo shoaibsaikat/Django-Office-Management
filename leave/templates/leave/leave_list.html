@@ -10,10 +10,10 @@
 <table class="table table-striped">
     <thead>
       <tr>
-        <th scope="col">#</th>
         <th scope="col">Title</th>
-        <th scope="col">Start Date</th>
-        <th scope="col">End Date</th>
+        <th scope="col">Created</th>
+        <th scope="col">Start</th>
+        <th scope="col">End</th>
         <th scope="col">Day(s)</th>
         <th scope="col">Status</th>
       </tr>
@@ -21,8 +21,8 @@
     <tbody>
         {% for item in object_list %}
             <tr>
-                <th scope="row">{{item.pk}}</th>
                 <td>{{ item.title }}</td>
+                <td>{{ item.creationDate|date:"N j, Y" }}</td>
                 <td>{{ item.startDate|date:"N j, Y" }}</td>
                 <td>{{ item.endDate|date:"N j, Y" }}</td>
                 <td>{{ item.dayCount }}</td>

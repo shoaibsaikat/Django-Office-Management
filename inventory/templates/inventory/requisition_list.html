@@ -1,32 +1,33 @@
 {% extends "base.html" %}
 
 {% block body_block %}
-<h3>Requests</h3>
-<br>
-<ul class="list-group">
-    {% for item in object_list %}
-        <li class="list-group-item">
-            <form class="row" method="POST">
-                {% csrf_token %}
-                <a class="col-md-8" href="{% url 'inventory:requisition_detail_form' pk=item.pk %}">{{ item.user }} requested for {{ item.amount }} {{ item.inventory.unit }}(s) of {{ item.inventory.name }}</a>
-                <label for="pk" hidden></label>
-                <input type="text" value="{{ item.pk }}" id="pk" name="pk" hidden>
-                <div class="col-md-3">
-                    <label for="distributor" hidden></label>
-                    <select id="distributor" name="distributor" class="form-select" required>
-                        <option value="" selected disabled>Select distributor</option>
-                        {% for user in distributor_list %}
-                            <option value="{{ user.id }}">{{ user.username }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-1">
-                    <input type="submit" value="Approve" class="btn btn-primary">
-                </div>
-            </form>
-        </li>
-    {% empty %}
-        <li>No request yet.</li>
-    {% endfor %}
-</ul>
+<div class="card-header"><h3>Requests</h3></div>
+<div class="card-body">
+    <ul class="list-group">
+        {% for item in object_list %}
+            <li class="list-group-item">
+                <form class="row" method="POST">
+                    {% csrf_token %}
+                    <a class="col-md-6" href="{% url 'inventory:requisition_detail_form' pk=item.pk %}">{{ item.user }} requested for {{ item.amount }} {{ item.inventory.unit }}(s) of {{ item.inventory.name }}</a>
+                    <label for="pk" hidden></label>
+                    <input type="text" value="{{ item.pk }}" id="pk" name="pk" hidden>
+                    <div class="col-md-4">
+                        <label for="distributor" hidden></label>
+                        <select id="distributor" name="distributor" class="form-select" required>
+                            <option value="" selected disabled>Select distributor</option>
+                            {% for user in distributor_list %}
+                                <option value="{{ user.id }}">{{ user.username }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2" style="text-align: right;">
+                        <input type="submit" value="Approve" class="btn btn-primary">
+                    </div>
+                </form>
+            </li>
+        {% empty %}
+            <li>No request yet.</li>
+        {% endfor %}
+    </ul>
+</div>
 {% endblock body_block %}

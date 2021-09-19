@@ -1,18 +1,19 @@
 {% extends "base.html" %}
 
 {% block body_block %}
-<br>
-<div class="row">
-    <h3 class="col-sm-8">Item List</h3>
-    <div class="col-sm-4" style="text-align: right;"><a href="{% url 'inventory:create' %}" class="btn btn-primary">Create Item</a></div>
+<div class="card-body">
+    <div class="row">
+        <h3 class="col-sm-8">Item List</h3>
+        <div class="col-sm-4" style="text-align: right;"><a href="{% url 'inventory:create' %}" class="btn btn-primary">Create Item</a></div>
+    </div>
+    <br>
+    <br>
+    <ul class="list-group">
+        {% for item in object_list %}
+            <li class="list-group-item"><a href="{% url 'inventory:edit' pk=item.pk %}">{{ item.name }} - {{ item.count }} - {{ item.unit }}(s)</a></li>
+        {% empty %}
+            <li>No items yet.</li>
+        {% endfor %}
+    </ul>
 </div>
-<br>
-<br>
-<ul class="list-group">
-    {% for item in object_list %}
-        <li class="list-group-item"><a href="{% url 'inventory:edit' pk=item.pk %}">{{ item.name }} - {{ item.count }} - {{ item.unit }}(s)</a></li>
-    {% empty %}
-        <li>No items yet.</li>
-    {% endfor %}
-</ul>
 {% endblock body_block %}

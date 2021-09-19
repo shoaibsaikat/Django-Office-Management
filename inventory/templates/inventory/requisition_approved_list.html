@@ -1,29 +1,30 @@
 {% extends "base.html" %}
 
 {% block body_block %}
-<h3>Requests</h3>
-<br>
-{% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
-        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-            <span class="text-danger">{{ message }}</span>
-        {% else %}
-            {{ message }}
-        {% endif %}
-    </li>
-    {% endfor %}
-</ul>
-{% endif %}
-<ul class="list-group">
-    {% for item in object_list %}
-        <li class="list-group-item">
-            <span>{{ item.user }} requested for {{ item.amount }} {{ item.inventory.unit }}(s) of {{ item.inventory.name }}</span>
-            <a href="{% url 'inventory:requisition_distributed' pk=item.pk %}" class="btn btn-primary" style="float: right;">Done</a>
+<div class="card-header"><h3>Requests</h3></div>
+<div class="card-body">
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                <span class="text-danger">{{ message }}</span>
+            {% else %}
+                {{ message }}
+            {% endif %}
         </li>
-    {% empty %}
-        <li>No request yet.</li>
-    {% endfor %}
-</ul>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    <ul class="list-group">
+        {% for item in object_list %}
+            <li class="list-group-item">
+                <span>{{ item.user }} requested for {{ item.amount }} {{ item.inventory.unit }}(s) of {{ item.inventory.name }}</span>
+                <a href="{% url 'inventory:requisition_distributed' pk=item.pk %}" class="btn btn-primary" style="float: right;">Done</a>
+            </li>
+        {% empty %}
+            <li>No request yet.</li>
+        {% endfor %}
+    </ul>
+</div>
 {% endblock body_block %}
