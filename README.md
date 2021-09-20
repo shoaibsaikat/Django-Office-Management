@@ -3,6 +3,7 @@ A simple inventory and leave management system using Django
 
 # Installation
 Requirement:
+* for anaconda: conda install -c anaconda django
 1. pip install django-bootstrap-v5
 2. pip install django mysqlclient
 
@@ -36,7 +37,7 @@ Troubleshooting:
 3. sudo service apache2 restart
 
 # Operation
-1. To make an inventory approver account, it should have canApproveInventory permission in Profile table. (can be updated from admin panel)
-2. To make a inventory distributor account, it should have canDistributeInventory permission in Profile table. (can be updated from admin panel)
-3. To make a leave approver account, it should have canApproveLeave permission in Profile table. (can be updated from admin panel)
+1. To make an inventory approver account, it should have canApproveInventory permission in Profile table. (can be updated from admin panel or DB)
+2. To make a inventory distributor account, it should have canDistributeInventory permission in Profile table. (can be updated from admin panel or DB)
+3. To make a leave approver account, it should have canApproveLeave permission in Profile table. (can be updated from admin panel or DB)
 
