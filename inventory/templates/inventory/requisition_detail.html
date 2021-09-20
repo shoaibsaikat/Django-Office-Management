@@ -3,32 +3,50 @@
 {% block body_block %}
 <div class="card-header"><h3>{{ object.title }}</h3></div>
 <div class="card-body">
-    <form method="post">
-        {% csrf_token %}
-        <strong>{{ requisition.title }}</strong>
-        <p>{{ requisition.user }} requested for {{ requisition.amount }} {{ requisition.inventory.unit }}(s) of {{ requisition.inventory.name }}</p>
-        <p><strong>Status:</strong>
-            {% if requisition.distributed %}
+    <p>{{ object.user }} requested for {{ object.amount }} {{ object.inventory.unit }}(s) of {{ object.inventory.name }}</p>
+    <div class="row">
+        <div class="col-sm-3">
+            <strong>Status:</strong>
+        </div>
+        <div class="col-sm-9">
+            {% if object.distributed %}
                 <span class="text-success">Distributed</span>
-            {%  elif requisition.approved %}
+            {%  elif object.approved %}
                 <span class="text-warning">Approved</span>
             {% else %}
                 <span class="text-danger">Waiting for the approval</span>
             {% endif %}
-        </p>
-
-        {% if object.comment %}
-            <strong>Comment:</strong>
-            <p>{{ requisition.comment }}</p>
-        {% endif %}
-        {% if object.approver is not None %}
-            <label class="form-label" for="distributor"><strong>Approver</strong></label>
-            <input class="form-control" type="text" value="{{ requisition.approver }}" disabled>
-        {% endif %}
-        {% if object.distributor is not None %}
-            <label class="form-label" for="distributor"><strong>Distributor</strong></label>
-            <input class="form-control" type="text" value="{{ requisition.distributor }}" disabled>
-        {% endif %}
-    </form>
+        </div>
+    </div>
+    {% if object.comment %}
+        <div class="row">
+            <div class="col-sm-3">
+                <strong>Comment:</strong>
+            </div>
+            <div class="col-sm-9">
+                {{ object.comment }}
+            </div>
+        </div>
+    {% endif %}
+    {% if object.approver is not None %}
+        <div class="row">
+            <div class="col-sm-3">
+                <strong>Approver:</strong>
+            </div>
+            <div class="col-sm-9">
+                {{ object.approver }}
+            </div>
+        </div>
+    {% endif %}
+    {% if object.distributor is not None %}
+        <div class="row">
+            <div class="col-sm-3">
+                <strong>Distributor:</strong>
+            </div>
+            <div class="col-sm-9">
+                {{ object.distributor }}
+            </div>
+        </div>
+    {% endif %}
 </div>
 {% endblock body_block %}

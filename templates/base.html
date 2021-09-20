@@ -12,46 +12,22 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body class="container bg-warning bg-opacity-10">
-  <div class="card bg-warning bg-opacity-25">
+  <!-- nav bar -->
+  <div class="card bg-danger bg-opacity-75">
     <nav class="navbar navbar-expand-lg navbar-light bg-transparent" style="margin-left: 1em;">
       <a class="navbar-brand" href="/"><strong>Home</strong></a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto">
-          <!-- {% if user.profile.canApproveInventory or user.profile.canDistributeInventory %}
-            <li class="nav-item active">
-              <strong><a class="nav-link" href="{% url 'inventory:list' %}">Inventory</a></strong>
-            </li>
-            <li class="nav-item active">
-              <strong><a class="nav-link" href="{% url 'inventory:requisition_history' %}">Requisition History</a></strong>
-            </li>
-          {% endif %}
-          {% if user.is_authenticated %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'inventory:create_requisition' %}">Request a Item</a>
-            </li>
-            {% if user.profile.canApproveInventory %}
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'inventory:requisition_list' %}">Item Request List</a>
-              </li>
-            {% endif %}
-            {% if user.profile.canDistributeInventory %}
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'inventory:requisition_approved_list' %}">Distribution List</a>
-              </li>
-            {% endif %}
-          {% endif %} -->
-        </ul>
+        <ul class="navbar-nav me-auto"><!-- <li class="nav-item active"><a class="nav-link" href="#"></a></li> --></ul>
         <ul class="navbar-nav" style="margin-right: 1em;">
           {% if user.is_authenticated %}
             <li class="nav-item">
               <a class="navbar-brand" href="{% url 'accounts:change_profile' %}">@<u><em><strong>{{user.username}}</strong></em></u></a>
             </li>
             <li class="nav-item">
-              <a class="btn btn-outline-success" href="{% url 'accounts:signout' %}">Logout</a>
+              <a class="btn btn-outline-warning" href="{% url 'accounts:signout' %}">Logout</a>
             </li>
           {% else %}
             <li class="nav-item">
@@ -63,13 +39,16 @@
     </nav>
   </div>
   <br>
+  <!-- page -->
   <div class="container card bg-light bg-opacity-50">
     <br>
     <div class="row">
+      <!-- content body -->
       <div class="col-md-9">
         {% block body_block %}
         {% endblock body_block %}
       </div>
+      <!-- right panel -->
       {% if user.is_authenticated %}
         <div class="col-md-3" style="text-align: left;">
           <!-- change password -->
@@ -107,7 +86,10 @@
                 <a class="nav-link list-group-item" href="{% url 'leave:create' %}">Leave Application</a>
                 <a class="nav-link list-group-item" href="{% url 'leave:my_list' %}">My Leaves</a>
                 {% if user.profile.canApproveLeave %}
-                  <a class="nav-link list-group-item" href="#">Pending Requests</a>
+                  <a class="nav-link list-group-item" href="{% url 'leave:history' %}">Approved Requests</a>
+                {% endif %}
+                {% if user.profile.canApproveLeave %}
+                  <a class="nav-link list-group-item" href="{% url 'leave:request_list' %}">Pending Requests</a>
                 {% endif %}
               </div>
             </div>
@@ -116,7 +98,7 @@
       {% endif %}
     </div>
     <br>
-    <div class="card bg-warning bg-opacity-25">
+    <div class="card bg-warning bg-opacity-10">
       <div class="card-body">
         <div><small>Developed and &copy;Copyright protected by Mina Shoaib Rahman, 2021</small></div>
       </div>

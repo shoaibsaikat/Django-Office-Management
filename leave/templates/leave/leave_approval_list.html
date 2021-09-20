@@ -5,7 +5,7 @@
 {% bootstrap_javascript %}
 
 {% block body_block %}
-<div class="card-header"><h3>My Leaves</h3></div>
+<div class="card-header"><h3>My Approvals</h3></div>
 <div class="card-body">
     <table class="table table-striped">
         <thead>
@@ -15,23 +15,19 @@
             <th scope="col">Start</th>
             <th scope="col">End</th>
             <th scope="col">Day(s)</th>
-            <th scope="col">Status</th>
+            <th scope="col">Approval</th>
         </tr>
         </thead>
         <tbody>
             {% for item in object_list %}
                 <tr>
-                    <td>{{ item.title }}</td>
+                    <td><a href="{% url 'leave:detail' pk=item.pk %}">{{ item.title }}</a></td>
                     <td>{{ item.creationDate|date:"N j, Y" }}</td>
                     <td>{{ item.startDate|date:"N j, Y" }}</td>
                     <td>{{ item.endDate|date:"N j, Y" }}</td>
                     <td>{{ item.dayCount }}</td>
                     <td>
-                        {% if item.approved %}
-                            <span class="text-success">Approved</span>
-                        {% else %}
-                            <span class="text-danger">Processing</span>
-                        {% endif %}
+                        <a href="{% url 'leave:leave_approve' pk=item.pk %}" class="btn btn-primary">Approve</a>
                     </td>
                 </tr>
             {% endfor %}

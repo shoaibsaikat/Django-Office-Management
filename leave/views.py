@@ -45,3 +45,48 @@ class LeaveListView(LoginRequiredMixin, ListView):
         context['object_list'] = Leave.objects.filter(user=self.request.user).order_by('-pk')
         return context
 
+class LeaveRequestListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+    model = Leave
+    template_name = 'leave/leave_approval_list.html'
+
+    def get_queryset(self):
+        return Leave.objects.filter(approver=self.request.user, approved=False)
+
+    def test_func(self):
+        return self.request.user.profile.canApproveLeave
+
+class LeaveDetailView(LoginRequiredMixin, UserPassesTestMixin, View):
+    model = Leave
+
+    def get(self, request, *args, **kwargs):
+        detail = Leave.objects.get(pk=kwargs['pk'])
+        return render(request, 'leave/leave_detail.html', {'object': detail})
+
+    def post(self, request, *args, **kwargs):
+        leave = Leave.objects.get(pk=kwargs['pk'])
+        leave.approveDate = datetime.now()
+        leave.approved = True
+        leave.save()
+        return redirect('leave:request_list')
+
+    def test_func(self):
+        return self.request.user.profile.canApproveLeave
+
+@login_required
+@user_passes_test(lambda u: u.profile.canApproveLeave)
+def leaveApproved(request, pk):
+    leave = Leave.objects.get(pk=pk)
+    leave.approveDate = datetime.now()
+    leave.approved = True
+    leave.save()
+    return redirect('leave:request_list')
+
+class LeaveHistoryListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+    model = Leave
+    template_name = 'leave/leave_history.html'
+
+    def get_queryset(self):
+        return Leave.objects.filter(approver=self.request.user, approved=True).order_by('-pk')
+
+    def test_func(self):
+        return self.request.user.profile.canApproveLeave
