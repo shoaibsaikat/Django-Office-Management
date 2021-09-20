@@ -1,5 +1,5 @@
-# Django-Inventory-Management
-A simple inventory management system using Django
+# Django-Office-Management
+A simple inventory and leave management system using Django
 
 # Installation
 Requirement:
