@@ -43,17 +43,42 @@
   <div class="container card bg-light bg-opacity-50">
     <br>
     <div class="row">
-      <!-- content body -->
       <div class="col-md-9">
+        <!-- content body -->
         {% block body_block %}
         {% endblock body_block %}
+        <!-- message block -->
+        {% if messages %}
+          <div class="card bg-warning bg-opacity-10">
+            <div class="card-body">
+              <ul class="messages">
+                  {% for message in messages %}
+                  <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                      {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                          <span class="text-danger">{{ message }}</span>
+                      {% else %}
+                          <span class="text-success">{{ message }}</span>
+                      {% endif %}
+                  </li>
+                  {% endfor %}
+              </ul>
+            </div>
+          </div>
+          <br>
+        {% endif %}
       </div>
       <!-- right panel -->
       {% if user.is_authenticated %}
         <div class="col-md-3" style="text-align: left;">
-          <!-- change password -->
-          <div class="list-group">
-            <a class="nav-link list-group-item bg-info bg-opacity-50" href="{% url 'accounts:change_password' %}"><strong>Change Password</strong></a>
+          <!-- user info change -->
+          <div class="card bg-light">
+            <div class="card-header bg-info bg-opacity-50"><strong>User Info</strong></div>
+            <div class="card-body">
+              <div class="list-group">
+                <a class="nav-link list-group-item" href="{% url 'accounts:change_password' %}">Change Password</a>
+                <a class="nav-link list-group-item" href="{% url 'accounts:change_info' %}">Change Info</a>
+              </div>
+            </div>
           </div>
           <br>
           <!-- inventory -->

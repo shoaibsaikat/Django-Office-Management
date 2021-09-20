@@ -1,12 +1,14 @@
-from inventory import models
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
+from django.views.generic.edit import FormView
 
-from .forms import SigninForm, ProfileForm
+from .forms import SigninForm, ProfileForm, InfoForm
 from .models import Profile
 
 def signin(request):
@@ -54,3 +56,29 @@ def change_profile(request):
     return render(request, 'accounts/profile.html', {
         'form': form
     })
+
+class ChangeInfoView(LoginRequiredMixin, FormView):
+    template_name = 'accounts/edit_profile.html'
+    form_class = InfoForm
+    success_url = reverse_lazy('accounts:change_info')
+
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['username'] = self.request.user.username
+        initial['first_name'] = self.request.user.first_name
+        initial['last_name'] = self.request.user.last_name
+        initial['email'] = self.request.user.email
+        return initial
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            user = request.user
+            # username = form.cleaned_data['username']
+            user.first_name = form.cleaned_data['first_name']
+            user.last_name = form.cleaned_data['last_name']
+            user.email = form.cleaned_data['email']
+            user.save()
+            messages.success(request, 'User info updated!')
+
+        return super().form_valid(form)

@@ -27,3 +27,8 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ('supervisor',)
+
+class InfoForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'email')
