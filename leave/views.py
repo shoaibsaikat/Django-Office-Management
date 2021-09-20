@@ -1,21 +1,14 @@
-from django.db.models import fields
-from django.views import generic
-from inventory import views
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
-from django.http import request
 from django.urls import reverse_lazy
 from django.views.generic import ListView
-from django.views.generic.detail import DetailView
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView
 from django.views import View
 from django.shortcuts import render, redirect
-from django.db import transaction
 
 from datetime import datetime
-import logging
 
 from . import forms
 from .models import Leave
@@ -36,6 +29,7 @@ class LeaveCreateView(LoginRequiredMixin, CreateView):
         form.instance.approver = self.request.user.profile.supervisor
         return super().form_valid(form)
 
+# my leaves
 class LeaveListView(LoginRequiredMixin, ListView):
     model = Leave
     fields = ('title', 'startDate', 'endDate', 'dayCount', 'approved')

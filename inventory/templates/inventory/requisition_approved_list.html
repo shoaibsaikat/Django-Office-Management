@@ -6,7 +6,7 @@
     <ul class="list-group">
         {% for item in object_list %}
             <li class="list-group-item">
-                <span>{{ item.user }} requested for {{ item.amount }} {{ item.inventory.unit }}(s) of {{ item.inventory.name }}</span>
+                <span>{{ item.user.first_name }} {{ item.user.last_name }} requested for {{ item.amount }} {{ item.inventory.unit }}(s) of {{ item.inventory.name }}</span>
                 <a href="{% url 'inventory:requisition_distributed' pk=item.pk %}" class="btn btn-primary" style="float: right;">Done</a>
             </li>
         {% empty %}

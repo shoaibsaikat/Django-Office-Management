@@ -6,7 +6,7 @@
     <form method="post">
         {% csrf_token %}
         <strong>{{ requisition.title }}</strong>
-        <p>{{ requisition.user }} requested for {{ requisition.amount }} {{ requisition.inventory.unit }}(s) of {{ requisition.inventory.name }}</p>
+        <p>{{ requisition.user.first_name }} {{ requisition.user.last_name }} requested for {{ requisition.amount }} {{ requisition.inventory.unit }}(s) of {{ requisition.inventory.name }}</p>
 
         {% if object.comment %}
             <strong>Comment:</strong>

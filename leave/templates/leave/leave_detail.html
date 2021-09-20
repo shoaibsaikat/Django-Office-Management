@@ -7,6 +7,14 @@
         {% csrf_token %}
         <div class="row">
             <div class="col-sm-3">
+                <strong>User:</strong>
+            </div>
+            <div class="col-sm-9">
+                {{ object.user.first_name }} {{ object.user.last_name }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3">
                 <strong>Created:</strong>
             </div>
             <div class="col-sm-9">
