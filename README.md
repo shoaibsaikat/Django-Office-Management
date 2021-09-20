@@ -36,6 +36,7 @@ Troubleshooting:
 3. sudo service apache2 restart
 
 # Operation
-1. To make an approver account account should have canApproveInventory permission in Profile table.
-2. To make a distributor account account should have canDistributeInventory permission in Profile table.
+1. To make an inventory approver account, it should have canApproveInventory permission in Profile table. (can be updated from admin panel)
+2. To make a inventory distributor account, it should have canDistributeInventory permission in Profile table. (can be updated from admin panel)
+3. To make a leave approver account, it should have canApproveLeave permission in Profile table. (can be updated from admin panel)
 
