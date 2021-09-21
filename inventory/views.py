@@ -35,7 +35,7 @@ class InventoryUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     redirect_field_name = 'redirect_to'
 
     model = models.Inventory
-    fields = ['description', 'unit', 'count']
+    form_class = forms.InventoryUpdateForm
     template_name_suffix = '_update_form'
     success_url = reverse_lazy('inventory:list')
 

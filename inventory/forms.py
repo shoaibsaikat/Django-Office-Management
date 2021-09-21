@@ -10,3 +10,16 @@ class RequisitionForm(forms.ModelForm):
         # labels = {
         #     'approver': 'Authority',
         # }
+
+class InventoryUpdateForm(forms.ModelForm):
+
+    name = forms.CharField(disabled=True)
+
+    class Meta:
+        model = models.Inventory
+        fields = ('name', 'description', 'unit', 'count')
+
+    # below works same as, disbaled=True
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     self.fields['name'].widget.attrs['readonly'] = True
