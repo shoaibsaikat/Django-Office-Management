@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path
 
 from . import views
 
@@ -8,6 +8,7 @@ urlpatterns = [
     path('', views.InventoryListView.as_view(), name='list'),
     path('create/', views.InventoryCreateView.as_view(), name='create'),
     path('edit/<int:pk>/', views.InventoryUpdateView.as_view(), name='edit'),
+    path('quick_edit/<int:pk>/<int:amount>/', views.inventoryQuickEdit, name='quick_edit'),
     path('requisition/create/', views.RequisitionCreateView.as_view(), name='create_requisition'),
     path('requisition/list/', views.RequisitionListView.as_view(), name='requisition_list'),
     path('requisition/detail/form/<int:pk>/', views.RequisitionDetailFormView.as_view(), name='requisition_detail_form'),

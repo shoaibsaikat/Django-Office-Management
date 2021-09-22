@@ -8,12 +8,32 @@
     </div>
     <br>
     <br>
-    <ul class="list-group">
-        {% for item in object_list %}
-            <li class="list-group-item"><a href="{% url 'inventory:edit' pk=item.pk %}">{{ item.name }} - {{ item.count }} - {{ item.unit }}(s)</a></li>
-        {% empty %}
-            <li>No items yet.</li>
-        {% endfor %}
-    </ul>
+    <div class="row">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">Item</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Unit Name</th>
+                <th scope="col">Update</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for item in object_list %}
+                    <tr>
+                        <td><a href="{% url 'inventory:edit' pk=item.pk %}">{{ item.name }}</a></td>
+                        <td onclick="onInventoryQuickUpdate('{{ item.pk }}')">
+                            <input type="number" id="amount_{{ item.pk }}" value="{{ item.count }}" min="0" class="form-control">
+                        </td>
+                        <td>{{ item.unit }}</td>
+                        <!-- we're generating href from javascript function 'onInventoryQuickUpdate' -->
+                        <td>
+                            <a id="update_{{ item.pk }}" id="" class="btn btn-primary" href="#">Update</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock body_block %}

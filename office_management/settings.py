@@ -139,9 +139,9 @@ STATIC_URL = '/static/'
 # DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATIC_URL = '/static/'
-
+# STATIC_ROOT = BASE_DIR.joinpath('static')
 STATICFILES_DIRS = [
-    BASE_DIR.joinpath('static')
+    BASE_DIR / 'static',
 ]
 
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
@@ -153,4 +153,4 @@ LOGOUT_REDIRECT_URL = '/'
 
 
 DEFAULT_AUTO_FIELD='django.db.models.AutoField'
-#ALLOWED_HOSTS = ['172.16.100.14', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']

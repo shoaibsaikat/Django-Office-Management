@@ -1,12 +1,12 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
-from django.http import request
 from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 from django.views import View
+from django.views.decorators.csrf import csrf_protect
 from django.shortcuts import render, redirect
 from django.db import transaction
 
@@ -16,8 +16,11 @@ import logging
 from . import forms
 from . import models
 
-class InventoryListView(ListView):
+class InventoryListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = models.Inventory
+
+    def test_func(self):
+        return self.request.user.profile.canDistributeInventory or self.request.user.profile.canApproveInventory
 
 class InventoryCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     login_url = '/user/signin/'
@@ -141,3 +144,12 @@ def requisitionDistributed(request, pk):
         
     return redirect('inventory:requisition_approved_list')
 
+@csrf_protect
+@login_required
+@user_passes_test(lambda u: u.profile.canDistributeInventory or u.profile.canApproveInventory)
+def inventoryQuickEdit(request, pk, amount):
+    item = models.Inventory.objects.get(pk=pk)
+    item.count = amount
+    item.save()
+    messages.success(request, item.name + ' updated!')
+    return redirect('inventory:list')
