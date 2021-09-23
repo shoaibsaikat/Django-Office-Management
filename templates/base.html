@@ -91,6 +91,7 @@
                   <a class="nav-link list-group-item" href="{% url 'inventory:requisition_history' %}">History</a>
                 {% endif %}
                 {% if user.is_authenticated %}
+                    <a class="nav-link list-group-item" href="{% url 'inventory:my_requisition' %}">My Requests</a>
                     <a class="nav-link list-group-item" href="{% url 'inventory:create_requisition' %}">New Request</a>
                   {% if user.profile.canApproveInventory %}
                     <a class="nav-link list-group-item" href="{% url 'inventory:requisition_list' %}">Pending Requests</a>

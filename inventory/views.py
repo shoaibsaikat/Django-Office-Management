@@ -45,23 +45,31 @@ class InventoryUpdateView(LoginRequiredMixin, UserPassesTestMixin, View):
         inventory.unit = self.request.POST['unit']
         inventory.count = self.request.POST['count']
         inventory.save()
-        messages.success(request, "Information update!")
+        messages.success(request, "Information updated!")
         return render(request, 'inventory/inventory_update_form.html', {'form': inventory})
 
     def test_func(self):
         return self.request.user.profile.canDistributeInventory or self.request.user.profile.canApproveInventory
 
 class RequisitionCreateView(LoginRequiredMixin, CreateView):
-    login_url = '/user/signin/'
-    redirect_field_name = 'redirect_to'
 
     model = models.Requisition
     form_class = forms.RequisitionForm
-    success_url = reverse_lazy('inventory:list')
+    success_url = reverse_lazy('index')
 
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
+
+class MyRequisitionListView(LoginRequiredMixin, ListView):
+
+    model = models.Requisition
+    template_name = 'inventory/requisition_personal_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['object_list'] = models.Requisition.objects.filter(user=self.request.user).order_by('-pk')
+        return context
 
 class RequisitionListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 
