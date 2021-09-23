@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView
 from django.views import View
 from django.views.decorators.csrf import csrf_protect
 from django.shortcuts import render, redirect
@@ -33,14 +33,20 @@ class InventoryCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     def test_func(self):
         return self.request.user.profile.canDistributeInventory or self.request.user.profile.canApproveInventory
 
-class InventoryUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    login_url = '/user/signin/'
-    redirect_field_name = 'redirect_to'
+class InventoryUpdateView(LoginRequiredMixin, UserPassesTestMixin, View):
 
-    model = models.Inventory
-    form_class = forms.InventoryUpdateForm
-    template_name_suffix = '_update_form'
-    success_url = reverse_lazy('inventory:list')
+    def get(self, request, *args, **kwargs):
+        inventory = models.Inventory.objects.get(pk=kwargs['pk'])
+        return render(request, 'inventory/inventory_update_form.html', {'form': inventory})
+
+    def post(self, request, *args, **kwargs):
+        inventory = models.Inventory.objects.get(pk=kwargs['pk'])
+        inventory.description = self.request.POST['description']
+        inventory.unit = self.request.POST['unit']
+        inventory.count = self.request.POST['count']
+        inventory.save()
+        messages.success(request, "Information update!")
+        return render(request, 'inventory/inventory_update_form.html', {'form': inventory})
 
     def test_func(self):
         return self.request.user.profile.canDistributeInventory or self.request.user.profile.canApproveInventory
@@ -127,6 +133,7 @@ class RequisitionHistoryList(LoginRequiredMixin, UserPassesTestMixin, ListView):
     def test_func(self):
         return self.request.user.profile.canDistributeInventory or self.request.user.profile.canApproveInventory
 
+@csrf_protect
 @login_required
 @user_passes_test(lambda u: u.profile.canDistributeInventory)
 @transaction.atomic
