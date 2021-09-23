@@ -67,13 +67,16 @@ class MyRequisitionListView(LoginRequiredMixin, ListView):
     template_name = 'inventory/requisition_personal_list.html'
 
     def get_context_data(self, **kwargs):
+        # TODO: add pagination
         context = super().get_context_data(**kwargs)
-        context['object_list'] = models.Requisition.objects.filter(user=self.request.user).order_by('-pk')
+        object_list = models.Requisition.objects.filter(user=self.request.user).order_by('-pk')[:10]
+        context['object_list'] = reversed(object_list)
         return context
 
 class RequisitionListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 
     def get(self, request, *args, **kwargs):
+        # TODO: add pagination
         requisitionList = models.Requisition.objects.filter(approver=self.request.user, approved=False)
         users = models.User.objects.all()
         return render(request, 'inventory/requisition_list.html', {'object_list': requisitionList, 'distributor_list': users})
@@ -112,12 +115,14 @@ class RequisitionDetailFormView(LoginRequiredMixin, UserPassesTestMixin, View):
         return self.request.user.profile.canDistributeInventory or self.request.user.profile.canApproveInventory
 
 class RequisitionDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+
     model = models.Requisition
 
     def test_func(self):
         return self.request.user.profile.canDistributeInventory or self.request.user.profile.canApproveInventory
 
 class RequisitionApprovedListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+
     model = models.Requisition
     template_name = 'inventory/requisition_approved_list.html'
 
@@ -130,6 +135,7 @@ class RequisitionApprovedListView(LoginRequiredMixin, UserPassesTestMixin, ListV
         return self.request.user.profile.canDistributeInventory
 
 class RequisitionHistoryList(LoginRequiredMixin, UserPassesTestMixin, ListView):
+
     model = models.Requisition
     template_name = 'inventory/requisition_history.html'
 

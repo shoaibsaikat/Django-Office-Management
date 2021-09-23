@@ -35,8 +35,10 @@ class LeaveListView(LoginRequiredMixin, ListView):
     fields = ('title', 'startDate', 'endDate', 'dayCount', 'approved')
 
     def get_context_data(self, **kwargs):
+        # TODO: add pagination
         context = super().get_context_data(**kwargs)
-        context['object_list'] = Leave.objects.filter(user=self.request.user).order_by('-pk')
+        leaves = Leave.objects.filter(user=self.request.user).order_by('-pk')[:10]
+        context['object_list'] = reversed(leaves)
         return context
 
 class LeaveRequestListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
@@ -76,6 +78,8 @@ def leaveApproved(request, pk):
     return redirect('leave:request_list')
 
 class LeaveHistoryListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+
+    # TODO: add pagination
     model = Leave
     template_name = 'leave/leave_history.html'
 
