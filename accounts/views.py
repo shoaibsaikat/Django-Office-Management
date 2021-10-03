@@ -45,7 +45,7 @@ def change_password(request):
     })
 
 @login_required
-def change_profile(request):
+def change_manager(request):
     profile = Profile.objects.get(pk=request.user.pk)
     if request.method == 'POST':
         form = ProfileForm(request.POST, instance=profile)

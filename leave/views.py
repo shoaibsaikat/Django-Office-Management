@@ -21,7 +21,7 @@ class LeaveCreateView(LoginRequiredMixin, CreateView):
     def get(self, request, *args, **kwargs):
         if self.request.user.profile.supervisor is None:
             messages.error(request, 'Add your manager first')
-            return redirect('accounts:change_profile')
+            return redirect('accounts:change_manager')
         return render(request, 'leave/leave_form.html', {'form': forms.LeaveForm()})
 
     def form_valid(self, form):
