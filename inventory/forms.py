@@ -7,9 +7,6 @@ class RequisitionForm(forms.ModelForm):
     class Meta:
         model = models.Requisition
         fields = ('title', 'inventory', 'approver', 'amount', 'comment')
-        # labels = {
-        #     'approver': 'Authority',
-        # }
 
 # class InventoryUpdateForm(forms.ModelForm):
 

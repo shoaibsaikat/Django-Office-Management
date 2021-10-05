@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'inventory.apps.InventoryConfig',
     'leave.apps.LeaveConfig',
+    'asset.apps.AssetConfig',
 ]
 
 MIDDLEWARE = [

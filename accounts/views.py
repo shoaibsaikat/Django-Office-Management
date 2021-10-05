@@ -53,7 +53,7 @@ def change_manager(request):
             profile.save()
     else:
         form = ProfileForm(instance=profile)
-    return render(request, 'accounts/profile.html', {
+    return render(request, 'accounts/change_supervisor.html', {
         'form': form
     })
 
