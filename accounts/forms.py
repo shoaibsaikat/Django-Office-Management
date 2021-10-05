@@ -31,6 +31,11 @@ class ProfileForm(forms.ModelForm):
             'supervisor': '',
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        users = User.objects.all()
+        self.fields['supervisor'].choices = [(user.pk, user.get_full_name()) for user in users]
+
 class InfoForm(forms.ModelForm):
     class Meta:
         model = User

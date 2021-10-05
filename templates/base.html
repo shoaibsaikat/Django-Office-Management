@@ -24,7 +24,7 @@
         <ul class="navbar-nav" style="margin-right: 1em;">
           {% if user.is_authenticated %}
             <li class="nav-item">
-              <div class="nav-link"><h5>@<em>{{user.first_name}} {{user.last_name}}</em></h5></div>
+              <div class="nav-link"><h5>@<em>{{ user.first_name }} {{ user.last_name }}</em></h5></div>
             </li>
             <li class="nav-item">
               <a class="btn btn-outline-warning" href="{% url 'accounts:signout' %}">Logout</a>
@@ -63,7 +63,10 @@
             <div class="card-header bg-info bg-opacity-50"><strong>Asset Management</strong></div>
             <div class="card-body">
               <div class="list-group">
-                <a class="nav-link list-group-item" href="#">List</a>
+                {% if user.profile.canManageAsset %}
+                  <a class="nav-link list-group-item" href="#">List</a>
+                  <a class="nav-link list-group-item" href="#">Create</a>
+                {% endif %}
                 <a class="nav-link list-group-item" href="#">Assign</a>
                 <a class="nav-link list-group-item" href="#">Pending</a>
               </div>

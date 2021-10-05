@@ -10,9 +10,10 @@ class Profile(models.Model):
     canDistributeInventory = models.BooleanField(default=False, blank=True)
     canApproveInventory = models.BooleanField(default=False, blank=True)
     canApproveLeave = models.BooleanField(default=False, blank=True)
+    canManageAsset = models.BooleanField(default=False, blank=True)
 
     def __str__(self):
-        return str(self.user)
+        return self.user.get_full_name()
 
     @receiver(post_save, sender=User)
     def create_profile(sender, instance, created, **kwargs):
