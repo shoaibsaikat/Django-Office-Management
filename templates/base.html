@@ -64,8 +64,8 @@
             <div class="card-body">
               <div class="list-group">
                 {% if user.profile.canManageAsset %}
-                  <a class="nav-link list-group-item" href="#">List</a>
-                  <a class="nav-link list-group-item" href="#">Create</a>
+                  <a class="nav-link list-group-item" href="{% url 'asset:list' %}">List</a>
+                  <a class="nav-link list-group-item" href="{% url 'asset:add' %}">Create</a>
                 {% endif %}
                 <a class="nav-link list-group-item" href="#">Assign</a>
                 <a class="nav-link list-group-item" href="#">Pending</a>
