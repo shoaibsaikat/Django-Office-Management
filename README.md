@@ -1,5 +1,11 @@
 # Django-Office-Management
-A simple inventory and leave management system using Django
+A simple office management system using Django
+
+# Features
+1. Own account management
+2. Inventory management
+3. Leave management
+4. Asset management (in progress)
 
 # Installation
 Requirement:
