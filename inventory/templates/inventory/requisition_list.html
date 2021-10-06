@@ -11,6 +11,7 @@
                     <a class="col-md-6" href="{% url 'inventory:requisition_detail_form' pk=item.pk %}">
                         {{ item.user.first_name }} {{ item.user.last_name }} requested for {{ item.amount }} {{ item.inventory.unit }}(s) of {{ item.inventory.name }}
                     </a>
+                    <!-- hidden input to get requisition id -->
                     <label for="pk" hidden></label>
                     <input type="text" value="{{ item.pk }}" id="pk" name="pk" hidden>
                     <div class="col-md-4">
@@ -18,7 +19,7 @@
                         <select id="distributor" name="distributor" class="form-select" required>
                             <option value="" selected disabled>Select distributor</option>
                             {% for user in distributor_list %}
-                                <option value="{{ user.id }}">{{ user.username }}</option>
+                                <option value="{{ user.id }}">{{ user.first_name }} {{ user.last_name }}</option>
                             {% endfor %}
                         </select>
                     </div>

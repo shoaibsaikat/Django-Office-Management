@@ -24,13 +24,13 @@
             <tbody>
                 {% for item in object_list %}
                     <tr>
-                        <td><a href="#">{{ item.name }}</a></td>
+                        <td><a href="{% url 'asset:update' pk=item.pk %}">{{ item.name }}</a></td>
                         <td>{{ item.model }}</td>
                         <td>{{ item.serial }}</td>
                         <td>{{ item.purchaseDate|date:"N j, Y" }}</td>
                         <td>{{ item.warranty }}</td>
-                        <td>{{ item.status }}</td>
-                        <td>{{ item.type }}</td>
+                        <td>{{ item.get_status_display }}</td>
+                        <td>{{ item.get_type_display }}</td>
                         <td>{{ item.user.first_name }} {{ item.user.last_name }}</td>
                     </tr>
                 {% endfor %}

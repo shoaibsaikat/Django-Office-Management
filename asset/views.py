@@ -1,23 +1,31 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.models import User
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, FormView, UpdateView
 from django.views import View
 from django.views.decorators.csrf import csrf_protect
 from django.shortcuts import render, redirect
 from django.db import transaction
 from django.http import HttpResponseRedirect
+import datetime
 
 from .models import Asset, AssetHistory
-from .forms import AssetForm
+from .forms import AssetCreateForm, AssetUpdateForm
 
-class AssetCreateView(CreateView):
+# import the logging library
+import logging
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
+
+class AssetCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Asset
-    form_class = AssetForm
-    success_url = reverse_lazy('index')
+    form_class = AssetCreateForm
+    success_url = reverse_lazy('asset:list')
 
     def form_valid(self, form):
         self.object = form.save()
@@ -31,5 +39,39 @@ class AssetCreateView(CreateView):
 
         return HttpResponseRedirect(self.get_success_url())
 
-class AssetListView(ListView):
+    def test_func(self):
+        return self.request.user.profile.canManageAsset
+
+class AssetListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = Asset
+
+    def test_func(self):
+        return self.request.user.profile.canManageAsset
+
+class MyAssetListView(LoginRequiredMixin, ListView):
+
+    def get(self, request, *args, **kwargs):
+        # TODO: add pagination
+        assetList = Asset.objects.filter(user=self.request.user)
+        for i in assetList:
+            i.purchaseDate = i.purchaseDate + datetime.timedelta(days=i.warranty)
+        users = User.objects.all()
+        return render(request, 'asset/asset_my_list.html', {'object_list': assetList, 'user_list': users})
+
+    def post(self, request, *args, **kwargs):
+        asset = Asset.objects.get(pk=request.POST['pk'])
+        # logger.warning('assignee: {}'.format(request.POST['pk']))
+        if request.POST.get('assignee', False):
+            asset.next_user = User.objects.get(pk=request.POST['assignee'])
+            asset.approved = False
+            asset.save()
+        return redirect('asset:my_list')
+
+class AssetUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Asset
+    form_class = AssetUpdateForm
+    template_name_suffix = '_update'
+    success_url = reverse_lazy('asset:list')
+
+    def test_func(self):
+        return self.request.user.profile.canManageAsset

@@ -5,7 +5,7 @@ from .models import Asset
 
 # from django.utils.translation import gettext_lazy as _
 
-class AssetForm(forms.ModelForm):
+class AssetCreateForm(forms.ModelForm):
     class Meta:
         model = Asset
         fields = ['name', 'model', 'serial', 'user', 'purchaseDate', 'warranty', 'type', 'status', 'description']
@@ -22,3 +22,16 @@ class AssetForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         users = User.objects.all()
         self.fields['user'].choices = [(user.pk, user.get_full_name()) for user in users]
+
+class AssetUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Asset
+        fields = ['name', 'model', 'serial', 'purchaseDate', 'warranty', 'type', 'status', 'description']
+        labels = {
+            'purchaseDate': 'Purchase Date',
+            'warranty': 'Warrenty (in days)',
+        }
+        widgets = {
+            'purchaseDate': forms.SelectDateWidget,
+        }
+

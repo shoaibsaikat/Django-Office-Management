@@ -22,6 +22,8 @@ class Asset(models.Model):
     model = models.CharField(max_length=255, default='', blank=False)
     serial = models.CharField(max_length=255, default='', blank=False)
     user = models.ForeignKey(User, on_delete=CASCADE, default=None, blank=False, related_name='assets')
+    next_user = models.ForeignKey(User, on_delete=CASCADE, null=True, related_name='pending_assets')
+    approved = models.BooleanField(default=True)
     purchaseDate = models.DateTimeField(default=None, blank=False)
     # in days
     warranty = models.PositiveBigIntegerField(default=0, blank=False)
