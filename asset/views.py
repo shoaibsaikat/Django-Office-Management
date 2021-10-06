@@ -63,9 +63,25 @@ class MyAssetListView(LoginRequiredMixin, ListView):
         # logger.warning('assignee: {}'.format(request.POST['pk']))
         if request.POST.get('assignee', False):
             asset.next_user = User.objects.get(pk=request.POST['assignee'])
-            asset.approved = False
             asset.save()
         return redirect('asset:my_list')
+
+class MyPendingAssetListView(LoginRequiredMixin, ListView):
+
+    def get(self, request, *args, **kwargs):
+        # TODO: add pagination
+        assetList = Asset.objects.filter(next_user=self.request.user)
+        for i in assetList:
+            i.purchaseDate = i.purchaseDate + datetime.timedelta(days=i.warranty)
+        return render(request, 'asset/asset_my_pending_list.html', {'object_list': assetList})
+
+    def post(self, request, *args, **kwargs):
+        asset = Asset.objects.get(pk=request.POST['pk'])
+        asset.user = self.request.user
+        asset.next_user = None
+        asset.save()
+        return redirect('asset:my_pending_list')
+
 
 class AssetUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Asset
