@@ -11,6 +11,7 @@
         <table class="table table-striped">
             <thead>
             <tr>
+                <th scope="col">#</th>
                 <th scope="col">Name</th>
                 <th scope="col">Model</th>
                 <th scope="col">Serial</th>
@@ -26,6 +27,7 @@
                         <!-- hidden input to get asset id -->
                         <input type="text" value="{{ item.pk }}" name="pk" hidden>
                         <tr>
+                            <td>{{ forloop.counter }}</td>
                             <td>{{ item.name }}</td>
                             <td>{{ item.model }}</td>
                             <td>{{ item.serial }}</td>
