@@ -18,7 +18,6 @@ from .forms import AssetCreateForm, AssetUpdateForm
 
 # import the logging library
 import logging
-
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
@@ -44,6 +43,8 @@ class AssetCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
 class AssetListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = Asset
+    paginate_by = 10
+    ordering = ['-purchaseDate']
 
     def test_func(self):
         return self.request.user.profile.canManageAsset
