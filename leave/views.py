@@ -3,7 +3,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.urls import reverse_lazy
-from django.views.generic import ListView
 from django.views.generic.edit import CreateView
 from django.views import View
 from django.shortcuts import render, redirect
@@ -43,23 +42,24 @@ class LeaveCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 # my leaves
-class LeaveListView(LoginRequiredMixin, ListView):
-    model = Leave
-    fields = ('title', 'startDate', 'endDate', 'dayCount', 'approved')
+class LeaveListView(LoginRequiredMixin, View):
 
-    def get_context_data(self, **kwargs):
-        # TODO: add pagination
-        context = super().get_context_data(**kwargs)
-        leaves = Leave.objects.filter(user=self.request.user).order_by('-pk')[:10]
-        context['object_list'] = reversed(leaves)
-        return context
+    def get(self, request, *args, **kwargs):
+        leaveList = Leave.objects.filter(user=self.request.user).order_by('-pk')
+        # pagination
+        page = request.GET.get('page', 1)
+        leaves = get_paginated_date(page, leaveList, PAGE_COUNT)
+        return render(request, 'leave/leave_list.html', {'object_list': leaves})
 
-class LeaveRequestListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
-    model = Leave
-    template_name = 'leave/leave_approval_list.html'
+# leaves requested to me
+class LeaveRequestListView(LoginRequiredMixin, UserPassesTestMixin, View):
 
-    def get_queryset(self):
-        return Leave.objects.filter(approver=self.request.user, approved=False)
+    def get(self, request, *args, **kwargs):
+        leaveList = Leave.objects.filter(approver=self.request.user, approved=False)
+        # pagination
+        page = request.GET.get('page', 1)
+        leaves = get_paginated_date(page, leaveList, PAGE_COUNT)
+        return render(request, 'leave/leave_approval_list.html', {'object_list': leaves})
 
     def test_func(self):
         return self.request.user.profile.canApproveLeave
@@ -90,14 +90,15 @@ def leaveApproved(request, pk):
     leave.save()
     return redirect('leave:request_list')
 
-class LeaveHistoryListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+# leaves approved by me
+class LeaveHistoryListView(LoginRequiredMixin, UserPassesTestMixin, View):
 
-    # TODO: add pagination
-    model = Leave
-    template_name = 'leave/leave_history.html'
-
-    def get_queryset(self):
-        return Leave.objects.filter(approver=self.request.user, approved=True).order_by('-pk')
+    def get(self, request, *args, **kwargs):
+        leaveList = Leave.objects.filter(approver=self.request.user, approved=True).order_by('-pk')
+        # pagination
+        page = request.GET.get('page', 1)
+        leaves = get_paginated_date(page, leaveList, PAGE_COUNT)
+        return render(request, 'leave/leave_history.html', {'object_list': leaves})
 
     def test_func(self):
         return self.request.user.profile.canApproveLeave
