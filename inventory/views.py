@@ -21,6 +21,16 @@ logger = logging.getLogger(__name__)
 
 PAGE_COUNT = 10
 
+def get_paginated_date(page, list, count):
+    paginator = Paginator(list, count)
+    try:
+        pages = paginator.page(page)
+    except PageNotAnInteger:
+        pages = paginator.page(1)
+    except EmptyPage:
+        pages = paginator.page(paginator.num_pages)
+    return pages
+
 class InventoryListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = models.Inventory
     paginate_by = PAGE_COUNT
@@ -66,16 +76,14 @@ class RequisitionCreateView(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
-class MyRequisitionListView(LoginRequiredMixin, ListView):
-    model = models.Requisition
-    template_name = 'inventory/requisition_personal_list.html'
+class MyRequisitionListView(LoginRequiredMixin, View):
 
-    def get_context_data(self, **kwargs):
-        # TODO: add pagination
-        context = super().get_context_data(**kwargs)
-        object_list = models.Requisition.objects.filter(user=self.request.user).order_by('-pk')
-        context['object_list'] = reversed(object_list)
-        return context
+    def get(self, request, *args, **kwargs):
+        requisitionList = models.Requisition.objects.filter(user=self.request.user).order_by('-pk')
+        # pagination
+        page = request.GET.get('page', 1)
+        requisitions = get_paginated_date(page, requisitionList, PAGE_COUNT)
+        return render(request, 'inventory/requisition_personal_list.html', {'object_list': requisitions})
 
 class RequisitionListView(LoginRequiredMixin, UserPassesTestMixin, View):
 
@@ -83,13 +91,7 @@ class RequisitionListView(LoginRequiredMixin, UserPassesTestMixin, View):
         requisitionList = models.Requisition.objects.filter(approver=self.request.user, approved=False)
         # pagination
         page = request.GET.get('page', 1)
-        paginator = Paginator(requisitionList, PAGE_COUNT)
-        try:
-            requisitions = paginator.page(page)
-        except PageNotAnInteger:
-            requisitions = paginator.page(1)
-        except EmptyPage:
-            requisitions = paginator.page(paginator.num_pages)
+        requisitions = get_paginated_date(page, requisitionList, PAGE_COUNT)
 
         # generating distributor list for dropdown
         users = models.User.objects.all()
@@ -98,6 +100,7 @@ class RequisitionListView(LoginRequiredMixin, UserPassesTestMixin, View):
     def post(self, request, *args, **kwargs):
         requisition = models.Requisition.objects.filter(pk=request.POST['pk']).first()
         requisition.approved = True
+
         if request.POST.get('distributor', False):
             requisition.distributor = models.User.objects.filter(pk=request.POST['distributor']).first()
             requisition.approveDate = datetime.now()
@@ -133,15 +136,15 @@ class RequisitionDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView)
     def test_func(self):
         return self.request.user.profile.canDistributeInventory or self.request.user.profile.canApproveInventory
 
-class RequisitionApprovedListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
-    model = models.Requisition
-    template_name = 'inventory/requisition_approved_list.html'
+class RequisitionApprovedListView(LoginRequiredMixin, UserPassesTestMixin, View):
 
-    # TODO: add pagination
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['object_list'] = models.Requisition.objects.filter(distributor=self.request.user, distributed=False)
-        return context
+    def get(self, request, *args, **kwargs):
+        requisitionList = models.Requisition.objects.filter(distributor=self.request.user, distributed=False)
+        # pagination
+        page = request.GET.get('page', 1)
+        requisitions = get_paginated_date(page, requisitionList, PAGE_COUNT)
+
+        return render(request, 'inventory/requisition_approved_list.html', {'object_list': requisitions})
 
     def test_func(self):
         return self.request.user.profile.canDistributeInventory

@@ -25,6 +25,16 @@ logger = logging.getLogger(__name__)
 
 PAGE_COUNT = 10
 
+def get_paginated_date(page, list, count):
+    paginator = Paginator(list, count)
+    try:
+        pages = paginator.page(page)
+    except PageNotAnInteger:
+        pages = paginator.page(1)
+    except EmptyPage:
+        pages = paginator.page(paginator.num_pages)
+    return pages
+
 class AssetCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Asset
     form_class = AssetCreateForm
@@ -63,13 +73,7 @@ class MyAssetListView(LoginRequiredMixin, View):
 
         # pagination
         page = request.GET.get('page', 1)
-        paginator = Paginator(assetList, PAGE_COUNT)
-        try:
-            assets = paginator.page(page)
-        except PageNotAnInteger:
-            assets = paginator.page(1)
-        except EmptyPage:
-            assets = paginator.page(paginator.num_pages)
+        assets = get_paginated_date(page, assetList, PAGE_COUNT)
 
         # getting user list for dropdown
         users = User.objects.all()
@@ -93,13 +97,7 @@ class MyPendingAssetListView(LoginRequiredMixin, View):
 
         # pagination
         page = request.GET.get('page', 1)
-        paginator = Paginator(assetList, PAGE_COUNT)
-        try:
-            assets = paginator.page(page)
-        except PageNotAnInteger:
-            assets = paginator.page(1)
-        except EmptyPage:
-            assets = paginator.page(paginator.num_pages)
+        assets = get_paginated_date(page, assetList, PAGE_COUNT)
 
         return render(request, 'asset/asset_my_pending_list.html', {'object_list': assets})
 

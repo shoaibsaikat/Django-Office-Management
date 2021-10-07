@@ -7,11 +7,24 @@ from django.views.generic import ListView
 from django.views.generic.edit import CreateView
 from django.views import View
 from django.shortcuts import render, redirect
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from datetime import datetime
 
 from . import forms
 from .models import Leave
+
+PAGE_COUNT = 10
+
+def get_paginated_date(page, list, count):
+    paginator = Paginator(list, count)
+    try:
+        pages = paginator.page(page)
+    except PageNotAnInteger:
+        pages = paginator.page(1)
+    except EmptyPage:
+        pages = paginator.page(paginator.num_pages)
+    return pages
 
 class LeaveCreateView(LoginRequiredMixin, CreateView):
     model = Leave

@@ -1,13 +1,17 @@
 {% extends "base.html" %}
 
 {% block body_block %}
-<div class="card-body">
+<div class="card-header">
     <div class="row">
-        <h3 class="col-sm-8">Item List</h3>
-        <div class="col-sm-4" style="text-align: right;"><a href="{% url 'inventory:create' %}" class="btn btn-primary">Create Item</a></div>
+        <div class="col-md-10">
+          <h3>Item List</h3>
+        </div>
+        <div class="col-md-2 float-right">
+            <a href="{% url 'inventory:create' %}" class="btn btn-primary">Create Item</a>
+        </div>
     </div>
-    <br>
-    <br>
+</div>
+<div class="card-body">
     <div class="row">
         <table class="table table-striped">
             <thead>

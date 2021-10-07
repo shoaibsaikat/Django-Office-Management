@@ -19,7 +19,7 @@ Requirement:
 3. To make a leave approver account, it should have canApproveLeave permission in Profile table. (can be updated from admin panel or DB)
 4. To make an asset manager account, it should have canManageAsset permission in Profile table. (can be updated from admin panel or DB)
 
-# ---- LinuxEnvironment ----
+# ---- Linux Environment ----
 # Setting up environment
 1. sudo apt install apache2
 2. sudo apt install mysql-server
