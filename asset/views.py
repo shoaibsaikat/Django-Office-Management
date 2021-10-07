@@ -5,21 +5,25 @@ from django.contrib import messages
 from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import CreateView, FormView, UpdateView
+from django.views.generic.edit import CreateView, UpdateView
 from django.views import View
 from django.views.decorators.csrf import csrf_protect
 from django.shortcuts import render, redirect
 from django.db import transaction
 from django.http import HttpResponseRedirect
-import datetime
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .models import Asset, AssetHistory
 from .forms import AssetCreateForm, AssetUpdateForm
+
+import datetime
 
 # import the logging library
 import logging
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
+
+PAGE_COUNT = 10
 
 class AssetCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Asset
@@ -43,21 +47,33 @@ class AssetCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
 class AssetListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = Asset
-    paginate_by = 10
+    paginate_by = PAGE_COUNT
     ordering = ['-purchaseDate']
 
     def test_func(self):
         return self.request.user.profile.canManageAsset
 
-class MyAssetListView(LoginRequiredMixin, ListView):
+class MyAssetListView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
-        # TODO: add pagination
         assetList = Asset.objects.filter(user=self.request.user)
+        # calculating warranty last date
         for i in assetList:
             i.purchaseDate = i.purchaseDate + datetime.timedelta(days=i.warranty)
+
+        # pagination
+        page = request.GET.get('page', 1)
+        paginator = Paginator(assetList, PAGE_COUNT)
+        try:
+            assets = paginator.page(page)
+        except PageNotAnInteger:
+            assets = paginator.page(1)
+        except EmptyPage:
+            assets = paginator.page(paginator.num_pages)
+
+        # getting user list for dropdown
         users = User.objects.all()
-        return render(request, 'asset/asset_my_list.html', {'object_list': assetList, 'user_list': users})
+        return render(request, 'asset/asset_my_list.html', {'object_list': assets, 'user_list': users})
 
     def post(self, request, *args, **kwargs):
         asset = Asset.objects.get(pk=request.POST['pk'])
@@ -70,11 +86,22 @@ class MyAssetListView(LoginRequiredMixin, ListView):
 class MyPendingAssetListView(LoginRequiredMixin, ListView):
 
     def get(self, request, *args, **kwargs):
-        # TODO: add pagination
         assetList = Asset.objects.filter(next_user=self.request.user)
+        # calculating warranty last date
         for i in assetList:
             i.purchaseDate = i.purchaseDate + datetime.timedelta(days=i.warranty)
-        return render(request, 'asset/asset_my_pending_list.html', {'object_list': assetList})
+
+        # pagination
+        page = request.GET.get('page', 1)
+        paginator = Paginator(assetList, PAGE_COUNT)
+        try:
+            assets = paginator.page(page)
+        except PageNotAnInteger:
+            assets = paginator.page(1)
+        except EmptyPage:
+            assets = paginator.page(paginator.num_pages)
+
+        return render(request, 'asset/asset_my_pending_list.html', {'object_list': assets})
 
     def post(self, request, *args, **kwargs):
         asset = Asset.objects.get(pk=request.POST['pk'])

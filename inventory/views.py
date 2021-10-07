@@ -18,9 +18,11 @@ from . import models
 import logging
 logger = logging.getLogger(__name__)
 
+PAGE_COUNT = 10
+
 class InventoryListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = models.Inventory
-    paginate_by = 10
+    paginate_by = PAGE_COUNT
 
     def test_func(self):
         return self.request.user.profile.canDistributeInventory or self.request.user.profile.canApproveInventory
@@ -76,7 +78,7 @@ class MyRequisitionListView(LoginRequiredMixin, ListView):
 
 class RequisitionListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     # model = models.Requisition
-    # paginate_by = 10
+    # paginate_by = PAGE_COUNT
     # ordering = ['-requestDate']
 
     def get(self, request, *args, **kwargs):
@@ -137,7 +139,7 @@ class RequisitionApprovedListView(LoginRequiredMixin, UserPassesTestMixin, ListV
 
 class RequisitionHistoryList(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = models.Requisition
-    paginate_by = 10
+    paginate_by = PAGE_COUNT
     ordering = ['-requestDate']
     template_name = 'inventory/requisition_history.html'
 
