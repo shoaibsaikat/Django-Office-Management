@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.views.generic import ListView
-from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 from django.views import View
 from django.views.decorators.csrf import csrf_protect
@@ -41,6 +40,7 @@ class AssetCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     success_url = reverse_lazy('asset:list')
 
     def form_valid(self, form):
+        form.instance.user = self.request.user
         self.object = form.save()
 
         # saving history
@@ -103,9 +103,19 @@ class MyPendingAssetListView(LoginRequiredMixin, View):
 
     def post(self, request, *args, **kwargs):
         asset = Asset.objects.get(pk=request.POST['pk'])
+
+        # saving history
+        history = AssetHistory()
+        history.fromUser = asset.user
+        history.toUser = self.request.user
+        history.asset = asset
+        history.save()
+
+        # saving asset
         asset.user = self.request.user
         asset.next_user = None
         asset.save()
+
         return redirect('asset:my_pending_list')
 
 

@@ -8,7 +8,7 @@ from .models import Asset
 class AssetCreateForm(forms.ModelForm):
     class Meta:
         model = Asset
-        fields = ['name', 'model', 'serial', 'user', 'purchaseDate', 'warranty', 'type', 'status', 'description']
+        fields = ['name', 'model', 'serial', 'purchaseDate', 'warranty', 'type', 'status', 'description']
         labels = {
             'user': 'Assigned to',
             'purchaseDate': 'Purchase Date',
@@ -18,10 +18,10 @@ class AssetCreateForm(forms.ModelForm):
             'purchaseDate': forms.SelectDateWidget,
         }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        users = User.objects.all()
-        self.fields['user'].choices = [(user.pk, user.get_full_name()) for user in users]
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     users = User.objects.all()
+    #     self.fields['user'].choices = [(user.pk, user.get_full_name()) for user in users]
 
 class AssetUpdateForm(forms.ModelForm):
     class Meta:
