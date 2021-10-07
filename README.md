@@ -5,7 +5,7 @@ A simple office management system using Django
 1. Own account management
 2. Inventory management
 3. Leave management
-4. Asset management (in progress)
+4. Asset management
 
 # Installation
 Requirement:

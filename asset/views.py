@@ -83,7 +83,7 @@ class MyAssetListView(LoginRequiredMixin, View):
             asset.save()
         return redirect('asset:my_list')
 
-class MyPendingAssetListView(LoginRequiredMixin, ListView):
+class MyPendingAssetListView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         assetList = Asset.objects.filter(next_user=self.request.user)

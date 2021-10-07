@@ -9,6 +9,7 @@ from django.views import View
 from django.views.decorators.csrf import csrf_protect
 from django.shortcuts import render, redirect
 from django.db import transaction
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from datetime import datetime
 
@@ -76,16 +77,23 @@ class MyRequisitionListView(LoginRequiredMixin, ListView):
         context['object_list'] = reversed(object_list)
         return context
 
-class RequisitionListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
-    # model = models.Requisition
-    # paginate_by = PAGE_COUNT
-    # ordering = ['-requestDate']
+class RequisitionListView(LoginRequiredMixin, UserPassesTestMixin, View):
 
     def get(self, request, *args, **kwargs):
-        # TODO: add pagination
         requisitionList = models.Requisition.objects.filter(approver=self.request.user, approved=False)
+        # pagination
+        page = request.GET.get('page', 1)
+        paginator = Paginator(requisitionList, PAGE_COUNT)
+        try:
+            requisitions = paginator.page(page)
+        except PageNotAnInteger:
+            requisitions = paginator.page(1)
+        except EmptyPage:
+            requisitions = paginator.page(paginator.num_pages)
+
+        # generating distributor list for dropdown
         users = models.User.objects.all()
-        return render(request, 'inventory/requisition_list.html', {'object_list': requisitionList, 'distributor_list': users})
+        return render(request, 'inventory/requisition_list.html', {'object_list': requisitions, 'distributor_list': users})
 
     def post(self, request, *args, **kwargs):
         requisition = models.Requisition.objects.filter(pk=request.POST['pk']).first()
@@ -129,6 +137,7 @@ class RequisitionApprovedListView(LoginRequiredMixin, UserPassesTestMixin, ListV
     model = models.Requisition
     template_name = 'inventory/requisition_approved_list.html'
 
+    # TODO: add pagination
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['object_list'] = models.Requisition.objects.filter(distributor=self.request.user, distributed=False)
