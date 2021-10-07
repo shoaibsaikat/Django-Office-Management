@@ -11,13 +11,16 @@ from django.shortcuts import render, redirect
 from django.db import transaction
 
 from datetime import datetime
-import logging
 
 from . import forms
 from . import models
 
+import logging
+logger = logging.getLogger(__name__)
+
 class InventoryListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = models.Inventory
+    paginate_by = 10
 
     def test_func(self):
         return self.request.user.profile.canDistributeInventory or self.request.user.profile.canApproveInventory
@@ -52,7 +55,6 @@ class InventoryUpdateView(LoginRequiredMixin, UserPassesTestMixin, View):
         return self.request.user.profile.canDistributeInventory or self.request.user.profile.canApproveInventory
 
 class RequisitionCreateView(LoginRequiredMixin, CreateView):
-
     model = models.Requisition
     form_class = forms.RequisitionForm
     success_url = reverse_lazy('index')
@@ -62,18 +64,20 @@ class RequisitionCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 class MyRequisitionListView(LoginRequiredMixin, ListView):
-
     model = models.Requisition
     template_name = 'inventory/requisition_personal_list.html'
 
     def get_context_data(self, **kwargs):
         # TODO: add pagination
         context = super().get_context_data(**kwargs)
-        object_list = models.Requisition.objects.filter(user=self.request.user).order_by('-pk')[:10]
+        object_list = models.Requisition.objects.filter(user=self.request.user).order_by('-pk')
         context['object_list'] = reversed(object_list)
         return context
 
 class RequisitionListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+    # model = models.Requisition
+    # paginate_by = 10
+    # ordering = ['-requestDate']
 
     def get(self, request, *args, **kwargs):
         # TODO: add pagination
@@ -101,7 +105,6 @@ class RequisitionDetailFormView(LoginRequiredMixin, UserPassesTestMixin, View):
         return render(request, 'inventory/requisition_detail_form.html', {'requisition': requisition, 'users': users})
 
     def post(self, request, *args, **kwargs):
-        # logger = logging.getLogger(__name__)
         # logger.warning('distributor: {}'.format(request.POST['distributor']))
         requisition = models.Requisition.objects.filter(pk=kwargs['pk']).first()
         requisition.approved = True
@@ -115,14 +118,12 @@ class RequisitionDetailFormView(LoginRequiredMixin, UserPassesTestMixin, View):
         return self.request.user.profile.canDistributeInventory or self.request.user.profile.canApproveInventory
 
 class RequisitionDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
-
     model = models.Requisition
 
     def test_func(self):
         return self.request.user.profile.canDistributeInventory or self.request.user.profile.canApproveInventory
 
 class RequisitionApprovedListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
-
     model = models.Requisition
     template_name = 'inventory/requisition_approved_list.html'
 
@@ -135,14 +136,10 @@ class RequisitionApprovedListView(LoginRequiredMixin, UserPassesTestMixin, ListV
         return self.request.user.profile.canDistributeInventory
 
 class RequisitionHistoryList(LoginRequiredMixin, UserPassesTestMixin, ListView):
-
     model = models.Requisition
+    paginate_by = 10
+    ordering = ['-requestDate']
     template_name = 'inventory/requisition_history.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['object_list'] = models.Requisition.objects.order_by('-pk')
-        return context
 
     def test_func(self):
         return self.request.user.profile.canDistributeInventory or self.request.user.profile.canApproveInventory
