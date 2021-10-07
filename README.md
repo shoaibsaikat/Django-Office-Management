@@ -13,7 +13,14 @@ Requirement:
 1. pip install django-bootstrap-v5
 2. pip install django mysqlclient
 
-Linux:
+# Operation
+1. To make an inventory approver account, it should have canApproveInventory permission in Profile table. (can be updated from admin panel or DB)
+2. To make an inventory distributor account, it should have canDistributeInventory permission in Profile table. (can be updated from admin panel or DB)
+3. To make a leave approver account, it should have canApproveLeave permission in Profile table. (can be updated from admin panel or DB)
+4. To make an asset manager account, it should have canManageAsset permission in Profile table. (can be updated from admin panel or DB)
+
+# ------------------------------------------ LinuxEnvironment -------------------------------------------------
+# Setting up environment
 1. sudo apt install apache2
 2. sudo apt install mysql-server
 3. sudo mysql_secure_installation
@@ -22,7 +29,7 @@ Linux:
 6. sudo phpenmod mbstring
 7. sudo systemctl restart apache2
 
-Configuring root(optional):
+# Configuring root(optional):
 1. sudo mysql
 2. SELECT user,authentication_string,plugin,host FROM mysql.user;
 3. ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '*****';
@@ -32,18 +39,12 @@ Configuring root(optional):
 7. GRANT ALL PRIVILEGES ON *.* TO 'saikat'@'localhost' WITH GRANT OPTION;
 8. exit
 
-Apache remote access:
+# Apache remote access:
 1. sudo ufw app list
 2. sudo ufw allow in "Apache"
 3. sudo ufw status
 
-Troubleshooting:
+# Troubleshooting:
 1. sudo gedit /etc/apache2/apache2.conf
 2. Add "Include /etc/phpmyadmin/apache.conf"
 3. sudo service apache2 restart
-
-# Operation
-1. To make an inventory approver account, it should have canApproveInventory permission in Profile table. (can be updated from admin panel or DB)
-2. To make a inventory distributor account, it should have canDistributeInventory permission in Profile table. (can be updated from admin panel or DB)
-3. To make a leave approver account, it should have canApproveLeave permission in Profile table. (can be updated from admin panel or DB)
-
