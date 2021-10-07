@@ -20,7 +20,7 @@
             {% for item in object_list %}
                 <tr>
                     <!-- showing row number -->
-                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ forloop.counter }}</td>
                     <td><a href="{% url 'inventory:requisition_detail' pk=item.pk %}">{{ item.title }}</a></td>
                     <td>{{ item.requestDate|date:"N j, Y" }}</td>
                     <td>{{ item.inventory.name }}</td>
