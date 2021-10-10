@@ -12,6 +12,7 @@ Requirement:
 * for anaconda: conda install -c anaconda django
 1. pip install django-bootstrap-v5
 2. pip install django mysqlclient
+3. For MySQL in windows, install Xampp. For Linux see section below on "Linux Environment"
 
 # Operation
 1. To make an inventory approver account, it should have canApproveInventory permission in Profile table. (can be updated from admin panel or DB)
