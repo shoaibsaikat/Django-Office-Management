@@ -4,14 +4,14 @@ from django.db.models.expressions import Case
 
 from accounts.models import User
 
-TYPE_CHOICES = (
+TYPE_CHOICE = (
     (0, 'Others'),
     (1, 'Desktop'),
     (2, 'Laptop'),
     (3, 'Printer'),
 )
 
-STATUS_CHOICES = (
+STATUS_CHOICE = (
     (0, 'Working'),
     (1, 'Repairing'),
     (2, 'Busted'),
@@ -29,9 +29,9 @@ class Asset(models.Model):
     warranty = models.PositiveBigIntegerField(default=0, blank=False)
     creationDate = models.DateTimeField(auto_now_add=True)
     description = models.TextField(default='', blank=True)
-    type = models.PositiveSmallIntegerField(choices=TYPE_CHOICES, default=0)
+    type = models.PositiveSmallIntegerField(choices=TYPE_CHOICE, default=0)
     # 0 -> working, 1 -> repairing, 2 -> busted
-    status = models.PositiveSmallIntegerField(choices=STATUS_CHOICES, default=0)
+    status = models.PositiveSmallIntegerField(choices=STATUS_CHOICE, default=0)
 
     def __str__(self):
         return self.name

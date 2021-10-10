@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
@@ -7,13 +8,20 @@ from django.views.generic.edit import CreateView
 from django.views import View
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Sum
 
-from datetime import datetime
+from datetime import datetime, date
 
 from . import forms
 from .models import Leave
 
 PAGE_COUNT = 10
+
+YEAR_CHOICE = (
+    (date.today().year, date.today().year),
+    (date.today().year - 1, date.today().year - 1),
+    (date.today().year - 2, date.today().year - 2),
+)
 
 def get_paginated_date(page, list, count):
     paginator = Paginator(list, count)
@@ -65,7 +73,6 @@ class LeaveRequestListView(LoginRequiredMixin, UserPassesTestMixin, View):
         return self.request.user.profile.canApproveLeave
 
 class LeaveDetailView(LoginRequiredMixin, UserPassesTestMixin, View):
-    model = Leave
 
     def get(self, request, *args, **kwargs):
         detail = Leave.objects.get(pk=kwargs['pk'])
@@ -90,15 +97,31 @@ def leaveApproved(request, pk):
     leave.save()
     return redirect('leave:request_list')
 
-# leaves approved by me
-class LeaveHistoryListView(LoginRequiredMixin, UserPassesTestMixin, View):
+# class LeaveHistoryListView(LoginRequiredMixin, UserPassesTestMixin, View):
+
+#     def get(self, request, *args, **kwargs):
+#         year = date.today().year
+#         leaveList = Leave.objects.filter(approved=True, startDate__gte=date(year, 1, 1), startDate__lte=date(year, 12, 31)).order_by('-pk')
+#         # pagination
+#         page = request.GET.get('page', 1)
+#         leaves = get_paginated_date(page, leaveList, PAGE_COUNT)
+#         return render(request, 'leave/leave_history.html', {'object_list': leaves})
+
+#     def test_func(self):
+#         return self.request.user.profile.canApproveLeave
+
+class LeaveSummaryListView(LoginRequiredMixin, UserPassesTestMixin, View):
 
     def get(self, request, *args, **kwargs):
-        leaveList = Leave.objects.filter(approver=self.request.user, approved=True).order_by('-pk')
+        year = kwargs['year']
+
+        leaveList = Leave.objects.filter(approved=True, startDate__gte=date(year, 1, 1), startDate__lte=date(year, 12, 31)) \
+                        .values('user', 'user__first_name', 'user__last_name') \
+                        .annotate(days=Sum('dayCount'))
         # pagination
         page = request.GET.get('page', 1)
         leaves = get_paginated_date(page, leaveList, PAGE_COUNT)
-        return render(request, 'leave/leave_history.html', {'object_list': leaves})
+        return render(request, 'leave/leave_summary.html', {'object_list': leaves, 'year_list': YEAR_CHOICE, 'selected_year': year})
 
     def test_func(self):
         return self.request.user.profile.canApproveLeave

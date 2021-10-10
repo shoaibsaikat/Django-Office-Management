@@ -136,9 +136,9 @@
                 <a class="nav-link list-group-item" href="{% url 'leave:create' %}">Apply</a>
                 <a class="nav-link list-group-item" href="{% url 'leave:my_list' %}">My Leaves</a>
                 {% if user.profile.canApproveLeave %}
-                  <a class="nav-link list-group-item" href="{% url 'leave:history' %}">Approved</a>
-                {% endif %}
-                {% if user.profile.canApproveLeave %}
+                  {% now "Y" as current_year %}
+                  <a class="nav-link list-group-item" href="{% url 'leave:summary' year=current_year %}">Summary</a>
+                  {% comment %} <a class="nav-link list-group-item" href="{% url 'leave:history' %}">Approved</a> {% endcomment %}
                   <a class="nav-link list-group-item" href="{% url 'leave:request_list' %}">Pending</a>
                 {% endif %}
               </div>

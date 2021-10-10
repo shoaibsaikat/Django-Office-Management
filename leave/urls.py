@@ -10,5 +10,6 @@ urlpatterns = [
     path('request_list/', views.LeaveRequestListView.as_view(), name='request_list'),
     path('request/approve/<int:pk>', views.leaveApproved, name='leave_approve'),
     path('detail/<int:pk>/', views.LeaveDetailView.as_view(), name='detail'),
-    path('history/', views.LeaveHistoryListView.as_view(), name='history'),
+    # path('history/', views.LeaveHistoryListView.as_view(), name='history'),
+    path('summary/<int:year>/', views.LeaveSummaryListView.as_view(), name='summary'),
 ]
