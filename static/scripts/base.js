@@ -18,10 +18,12 @@ function drawChart(list) {
         data.addRow(temp);
     }
 
-    var options = { 'height': 400, 'is3D': true, colors: ['#ffc107',] };
+    var options = { 'height': 400, 'is3D': true, colors: ['#283142',] };
     // '#82e1f5'
     // '#e5656d'
     // '#ffc107'
+    // '#4a90ed'
+    // '#283142'
 
     var chart = new google.visualization.BarChart(document.getElementById("inventoryPieChart"));
     chart.draw(data, options);
