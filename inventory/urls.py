@@ -17,4 +17,6 @@ urlpatterns = [
     path('requisition/approved/list/', views.RequisitionApprovedListView.as_view(), name='requisition_approved_list'),
     path('requisition/distributed/<int:pk>/', views.requisitionDistributed, name='requisition_distributed'),
     path('requisition/history/', views.RequisitionHistoryList.as_view(), name='requisition_history'),
+    # for chart
+    path('inventory_list/', views.getInventoryList, name='inventory_list'), 
 ]

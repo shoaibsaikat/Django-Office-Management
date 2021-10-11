@@ -1,6 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
+from django.http import HttpResponse, JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.views.generic.detail import DetailView
@@ -10,12 +11,14 @@ from django.views.decorators.csrf import csrf_protect
 from django.shortcuts import render, redirect
 from django.db import transaction
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core import serializers
 
 from datetime import datetime
 
 from . import forms
 from . import models
 
+import json
 import logging
 logger = logging.getLogger(__name__)
 
@@ -185,3 +188,10 @@ def inventoryQuickEdit(request, pk, amount):
     item.save()
     messages.success(request, item.name + ' updated!')
     return redirect('inventory:list')
+
+def getInventoryList(request):
+    if request.is_ajax and request.method == 'GET':
+        list = models.Inventory.objects.all()
+        return JsonResponse({'inventory_list': serializers.serialize('json', list)}, status = 200)
+
+    return JsonResponse({}, status = 400)
