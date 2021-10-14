@@ -63,7 +63,7 @@ class LeaveListView(LoginRequiredMixin, View):
 class LeaveRequestListView(LoginRequiredMixin, UserPassesTestMixin, View):
 
     def get(self, request, *args, **kwargs):
-        leaveList = Leave.objects.filter(approver=self.request.user, approved=False)
+        leaveList = Leave.objects.filter(approver=self.request.user, approved=False).order_by('-pk')
         # pagination
         page = request.GET.get('page', 1)
         leaves = get_paginated_date(page, leaveList, PAGE_COUNT)
@@ -90,7 +90,7 @@ class LeaveDetailView(LoginRequiredMixin, UserPassesTestMixin, View):
 
 @login_required
 @user_passes_test(lambda u: u.profile.canApproveLeave)
-def leaveApproved(request, pk):
+def leaveApprove(request, pk):
     leave = Leave.objects.get(pk=pk)
     leave.approveDate = datetime.now()
     leave.approved = True

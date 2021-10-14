@@ -91,7 +91,7 @@ class MyRequisitionListView(LoginRequiredMixin, View):
 class RequisitionListView(LoginRequiredMixin, UserPassesTestMixin, View):
 
     def get(self, request, *args, **kwargs):
-        requisitionList = models.Requisition.objects.filter(approver=self.request.user, approved=False)
+        requisitionList = models.Requisition.objects.filter(approver=self.request.user, approved=False).order_by('-pk')
         # pagination
         page = request.GET.get('page', 1)
         requisitions = get_paginated_date(page, requisitionList, PAGE_COUNT)
@@ -142,7 +142,7 @@ class RequisitionDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView)
 class RequisitionApprovedListView(LoginRequiredMixin, UserPassesTestMixin, View):
 
     def get(self, request, *args, **kwargs):
-        requisitionList = models.Requisition.objects.filter(distributor=self.request.user, distributed=False)
+        requisitionList = models.Requisition.objects.filter(distributor=self.request.user, distributed=False).order_by('-pk')
         # pagination
         page = request.GET.get('page', 1)
         requisitions = get_paginated_date(page, requisitionList, PAGE_COUNT)
@@ -158,6 +158,9 @@ class RequisitionHistoryList(LoginRequiredMixin, UserPassesTestMixin, ListView):
     ordering = ['-requestDate']
     template_name = 'inventory/requisition_history.html'
 
+    def get_queryset(self):
+        return models.Requisition.objects.all().order_by('-pk')
+
     def test_func(self):
         return self.request.user.profile.canDistributeInventory or self.request.user.profile.canApproveInventory
 
@@ -165,7 +168,7 @@ class RequisitionHistoryList(LoginRequiredMixin, UserPassesTestMixin, ListView):
 @login_required
 @user_passes_test(lambda u: u.profile.canDistributeInventory)
 @transaction.atomic
-def requisitionDistributed(request, pk):
+def requisitionDistribution(request, pk):
     requisition = models.Requisition.objects.filter(pk=pk).first()
     inventory = models.Inventory.objects.filter(pk=requisition.inventory.pk).first()
     if inventory.count < requisition.amount:
