@@ -192,8 +192,11 @@ def inventoryQuickEdit(request, pk, amount):
     messages.success(request, item.name + ' updated!')
     return redirect('inventory:list')
 
+def is_ajax(request):
+    return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+
 def getInventoryList(request):
-    if request.is_ajax and request.method == 'GET':
+    if is_ajax(request) and request.method == 'GET':
         list = models.Inventory.objects.all()
         return JsonResponse({'inventory_list': serializers.serialize('json', list)}, status = 200)
 
