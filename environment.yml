@@ -26,12 +26,11 @@ dependencies:
     - beautifulsoup4==4.9.3
     - cffi==1.14.5
     - charset-normalizer==2.0.6
-    - django-bootstrap-v5==1.0.10
+    - django-bootstrap-v5==1.0.11
     - django-bootstrap5==21.3
     - django-braces==1.14.0
     - django-cors-headers==3.10.0
     - django-filter==21.1
-    - djangorestframework==3.13.1
     - docopt==0.6.2
     - idna==3.2
     - importlib-metadata==4.10.1
@@ -40,6 +39,7 @@ dependencies:
     - pipreqs==0.4.10
     - pycparser==2.20
     - pyjwt==2.3.0
+    - pytz==2022.1
     - requests==2.26.0
     - six==1.16.0
     - soupsieve==2.2.1
