@@ -1,5 +1,10 @@
 # Django-Office-Management
-A simple office management system using Django
+A simple office management system using Django.
+
+This project is also replicated using different frameworks in frontend and backend. Those projects are,
+1. Office-Management-Django-Angular
+2. Office-Management-Django-Angualr-JWT
+3. Office-Management-.NET-Angular-JWT
 
 # Features
 1. Own account management
