@@ -9,6 +9,7 @@ TYPE_CHOICE = (
     (1, 'Desktop'),
     (2, 'Laptop'),
     (3, 'Printer'),
+    (50, 'Car'),
 )
 
 STATUS_CHOICE = (
@@ -35,6 +36,22 @@ class Asset(models.Model):
 
     def __str__(self):
         return self.name
+
+    def as_json(self):
+        return dict(
+            id=self.pk,
+            name=self.name,
+            model=self.model,
+            serial=self.serial,
+            user=self.user.pk,
+            user_first_name=self.user.first_name,
+            user_last_name=self.user.last_name,
+            next_user=self.next_user.pk if self.next_user is not None else None,
+            purchase_date=str(self.purchaseDate),
+            warranty=self.warranty,
+            type=self.type,
+            status=self.status,
+            description=self.description,)
 
 class AssetHistory(models.Model):
     fromUser = models.ForeignKey(User, on_delete=CASCADE, related_name='assets_assigned_by_me')

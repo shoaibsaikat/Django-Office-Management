@@ -125,7 +125,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = False #Zone support is not needed as it's used internall
+USE_TZ = False #Zone support is not needed as it's used internally
 # for zone support we've to replace datetime.now by timezone.now in models
 
 
