@@ -12,12 +12,17 @@ This project is also replicated using different frameworks in frontend and backe
 3. Leave management
 4. Asset management
 
+# Run
+1. conda create --name <env>
+2. conda activate <env>
+3. python manage.py runserver
+
 # Installation
 Requirement:
 * for anaconda: conda install -c anaconda django
 1. pip install django-bootstrap-v5
 2. pip install django mysqlclient
-3. For MySQL in windows, install Xampp. For Linux see section below on "Linux Environment"
+3. For MySQL in windows, install XAMPP. For Linux see section below on "Linux Environment"
 
 # Operation
 1. To make an inventory approver account, it should have canApproveInventory permission in Profile table. (can be updated from admin panel or DB)
@@ -54,7 +59,6 @@ Requirement:
 1. sudo gedit /etc/apache2/apache2.conf
 2. Add "Include /etc/phpmyadmin/apache.conf"
 3. sudo service apache2 restart
-
 
 Note:
 1. To generate spec list file -> conda list --explicit > <file_name>.txt
